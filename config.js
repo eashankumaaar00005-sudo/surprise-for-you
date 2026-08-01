@@ -1,82 +1,137 @@
-/* ==========================================================================
-   A SECRET JOURNEY — CONFIG
-   --------------------------------------------------------------------------
-   Everything you are likely to want to change lives in this one file:
-   names, the letter, the photos, the final message and the music.
-   Nothing in index.html, style.css or script.js needs to be touched.
-   ========================================================================== */
+/*
+==============================================================
+A Secret Journey
+Configuration File
+Edit this file to personalize your experience.
+==============================================================
+*/
 
-const CONFIG = {
+window.APP_CONFIG = {
 
-  /* ---------------------------------------------------------------------
-     WELCOME SCREEN
-     -------------------------------------------------------------------- */
-  welcome: {
-    eyebrow: "A Secret Journey",
-    heading: "For You",
-    subtitle: "Something has been waiting for you to find it.",
-    buttonLabel: "Open My Letter",
-  },
+    /*==========================================================
+    GENERAL
+    ==========================================================*/
 
-  /* ---------------------------------------------------------------------
-     ENVELOPE SCREEN
-     -------------------------------------------------------------------- */
-  envelope: {
-    seal: "❤", // symbol shown on the wax seal
-    hint: "Tap the envelope to open it",
-    to: "To the one who matters most",
-  },
+    siteTitle: "A Secret Journey",
 
-  /* ---------------------------------------------------------------------
-     LETTER
-     Each entry in "paragraphs" becomes its own line in the letter.
-     -------------------------------------------------------------------- */
-  letter: {
-    greeting: "My Dearest,",
-    paragraphs: [
-      "If you're reading this, it means I finally found a way to put into words what I've been carrying in my chest for a long time.",
-      "Every ordinary day becomes something worth remembering when you're in it. I don't say that lightly — I say it because it's the quiet, plain truth.",
-      "This little journey is my way of showing you a few of the moments that mean the most to me. Take your time with them.",
-      "There's more waiting for you just ahead.",
+    subtitle:
+        "Some moments deserve more than words.",
+
+    /*==========================================================
+    MUSIC
+    ==========================================================*/
+
+    music: {
+
+        autoplay: false,
+
+        volume: 0.45,
+
+        loop: true
+
+    },
+
+    /*==========================================================
+    PARTICLES
+    ==========================================================*/
+
+    particles: 26,
+
+    /*==========================================================
+    GALLERY
+    ==========================================================*/
+
+    galleryDelay: 180,
+
+    gallery: [
+
+        {
+            image: "assets/photos/photo1.jpg",
+            caption: "Every beginning feels magical."
+        },
+
+        {
+            image: "assets/photos/photo2.jpg",
+            caption: "Smiles become memories."
+        },
+
+        {
+            image: "assets/photos/photo3.jpg",
+            caption: "The little moments matter most."
+        },
+
+        {
+            image: "assets/photos/photo4.jpg",
+            caption: "Every journey feels lighter together."
+        },
+
+        {
+            image: "assets/photos/photo5.jpg",
+            caption: "Some stories deserve forever."
+        }
+
     ],
-    signature: "Always yours",
-  },
 
-  /* ---------------------------------------------------------------------
-     PHOTO GALLERY
-     Replace "src" with your own images inside assets/photos/
-     Captions are optional — leave as an empty string to omit.
-     -------------------------------------------------------------------- */
-  gallery: {
-    heading: "Moments We've Made",
-    subtitle: "A few frames from our story so far.",
-    photos: [
-      { src: "assets/photos/photo-1.jpg", caption: "The day it all began." },
-      { src: "assets/photos/photo-2.jpg", caption: "A moment I never wanted to end." },
-      { src: "assets/photos/photo-3.jpg", caption: "You, laughing — my favorite sound." },
-      { src: "assets/photos/photo-4.jpg", caption: "Somewhere, just the two of us." },
-      { src: "assets/photos/photo-5.jpg", caption: "This is my favorite kind of quiet." },
-    ],
-  },
+    /*==========================================================
+    LETTER
+    ==========================================================*/
 
-  /* ---------------------------------------------------------------------
-     FINAL SCREEN
-     -------------------------------------------------------------------- */
-  final: {
-    heading: "I Love You",
-    message: "Thank you for being the softest, safest place I know. Here's to every ordinary day still ahead of us.",
-    signature: "— Yours, always",
-    replayLabel: "Read It Again",
-  },
+    letter: {
 
-  /* ---------------------------------------------------------------------
-     MUSIC
-     Drop an mp3 into assets/music/ and update the path below.
-     Leave "src" empty ("") to hide the music control entirely.
-     -------------------------------------------------------------------- */
-  music: {
-    src: "assets/music/song.mp3",
-    label: "Our Song",
-  },
+        date: "Today",
+
+        greeting: "Dear You,",
+
+        paragraphs: [
+
+            "There are thousands of ordinary moments in life. Then there are the rare ones... the kind that quietly become unforgettable.",
+
+            "This journey isn't about destinations. It's about memories, laughter, unexpected smiles, and every little feeling that slowly became something beautiful.",
+
+            "Keep scrolling. The best part is still waiting."
+
+        ],
+
+        signature: "With all my heart ❤️"
+
+    },
+
+    /*==========================================================
+    FINAL MESSAGE
+    ==========================================================*/
+
+    ending: {
+
+        title: "Thank You",
+
+        message: [
+
+            "Thank you for every smile, every conversation, every unforgettable memory, and every tiny moment that quietly became part of my life.",
+
+            "No matter where life takes us, this journey will always remain special."
+
+        ],
+
+        emoji: "❤️"
+
+    },
+
+    /*==========================================================
+    TIMINGS (milliseconds)
+    ==========================================================*/
+
+    animation: {
+
+        welcomeFade: 350,
+
+        bounce: 650,
+
+        flapOpen: 850,
+
+        revealDelay: 500,
+
+        galleryDelay: 1200
+
+    }
 
 };

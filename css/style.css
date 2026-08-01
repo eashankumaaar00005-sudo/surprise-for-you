@@ -1150,9 +1150,9 @@ height:100%;
 
 object-fit:cover;
 
-transition:
+display:block;
 
-.8s;
+aspect-ratio:1/1;
 
 }
 
@@ -1675,5 +1675,96 @@ box-shadow:
 
 }
 
+
+}
+/*==================================================
+    MOBILE EXPERIENCE OPTIMIZATION
+==================================================*/
+
+
+@media(max-width:600px){
+
+
+body{
+
+overflow-x:hidden;
+
+}
+
+
+.glass{
+
+backdrop-filter:blur(12px);
+
+}
+
+
+#mouseGlow{
+
+display:none;
+
+}
+
+
+/* disable heavy tilt on mobile */
+
+.photo-card,
+.glass{
+
+transform:none!important;
+
+}
+
+
+/* better typography */
+
+.hero-card h1{
+
+letter-spacing:-1px;
+
+}
+
+
+.hero-card p{
+
+line-height:1.7;
+
+}
+
+
+/* envelope mobile */
+
+.envelope{
+
+margin-top:50px;
+
+}
+
+
+}
+    body.loaded{
+
+animation:
+
+pageFade .8s ease;
+
+}
+
+
+
+@keyframes pageFade{
+
+from{
+
+opacity:.7;
+
+}
+
+
+to{
+
+opacity:1;
+
+}
 
 }

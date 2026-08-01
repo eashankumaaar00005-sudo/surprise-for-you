@@ -789,13 +789,87 @@ gallery.appendChild(card);
 
 
 }
+/*==================================================
+ GALLERY LIGHTBOX
+==================================================*/
+
+
+const galleryImages =
+document.querySelectorAll(
+".photo-card img"
+);
 
 
 
+galleryImages.forEach(img=>{
+
+
+img.addEventListener(
+"click",
+()=>{
+
+
+const overlay =
+document.createElement("div");
+
+
+overlay.className=
+"image-viewer";
 
 
 
+overlay.innerHTML=`
 
+<img src="${img.src}">
+
+`;
+
+
+
+document.body.appendChild(
+overlay
+);
+
+
+
+gsap.from(
+overlay,
+{
+
+opacity:0,
+
+duration:.5
+
+}
+);
+
+
+
+overlay.onclick=()=>{
+
+gsap.to(
+overlay,
+{
+
+opacity:0,
+
+duration:.4,
+
+onComplete:()=>overlay.remove()
+
+}
+
+);
+
+
+};
+
+
+
+});
+
+
+});
 /*==================================================
     PHOTO TILT
 ==================================================*/

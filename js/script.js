@@ -15,7 +15,307 @@ const $ = (selector, scope = document) => scope.querySelector(selector);
 
 const $$ = (selector, scope = document) =>
     [...scope.querySelectorAll(selector)];
+/*==============================================================
+CONTENT RENDERER ENGINE
+==============================================================*/
 
+
+const ContentRenderer = {
+
+    /*
+    Create Welcome Screen
+    */
+
+    renderWelcome(){
+
+        const container = $("#welcomeContent");
+
+        if(!container || !APP_CONFIG) return;
+
+
+        container.innerHTML = `
+
+        <div class="tiny-label">
+            ${APP_CONFIG.welcome.label}
+        </div>
+
+
+        <h1 class="hero-title">
+            ${APP_CONFIG.welcome.title}
+        </h1>
+
+
+        <p class="hero-subtitle">
+            ${APP_CONFIG.welcome.subtitle}
+        </p>
+
+
+        <button
+        id="startJourney"
+        class="primary-btn"
+        aria-label="Open My Letter">
+
+            <span>
+            ${APP_CONFIG.welcome.button}
+            </span>
+
+        </button>
+
+        `;
+
+
+    },
+
+
+
+    /*
+    Create Letter Content
+    */
+
+
+    renderLetter(){
+
+        const container = $("#letterContent");
+
+        if(!container || !APP_CONFIG) return;
+
+
+        const paragraphs = 
+        APP_CONFIG.letter.paragraphs
+        .map(text => {
+
+            return `<p>${text}</p>`
+
+        })
+        .join("");
+
+
+
+        container.innerHTML = `
+
+
+        <div class="letter-date">
+
+            ${APP_CONFIG.letter.date}
+
+        </div>
+
+
+
+        <h2>
+
+            ${APP_CONFIG.letter.greeting}
+
+        </h2>
+
+
+
+        ${paragraphs}
+
+
+
+        <div class="signature">
+
+            ${APP_CONFIG.letter.signature}
+
+        </div>
+
+
+        `;
+
+
+    },
+
+
+
+    /*
+    Create Envelope Instruction
+    */
+
+
+    renderEnvelope(){
+
+        const instruction = 
+        $("#envelopeInstruction");
+
+
+        if(!instruction) return;
+
+
+        instruction.textContent = 
+        APP_CONFIG.envelope.instruction;
+
+
+    },
+
+
+
+    /*
+    Create Gallery
+    */
+
+
+    renderGallery(){
+
+        const list = $("#galleryList");
+
+
+        const header = $("#galleryHeader");
+
+
+        if(!list) return;
+
+
+
+        header.innerHTML = `
+
+        <div class="tiny-label">
+
+        ${APP_CONFIG.gallery.title}
+
+        </div>
+
+
+        <h2>
+
+        ${APP_CONFIG.gallery.heading}
+
+        </h2>
+
+        `;
+
+
+
+        list.innerHTML = 
+        APP_CONFIG.gallery.items
+        .map((item,index)=>{
+
+
+            return `
+
+            <figure 
+            class="photo-card"
+            data-index="${index}">
+
+
+                <img
+
+                loading="lazy"
+
+                src="${item.image}"
+
+                alt="${item.alt}"
+
+                >
+
+
+                <figcaption>
+
+                ${item.caption}
+
+                </figcaption>
+
+
+            </figure>
+
+
+            `;
+
+
+        })
+        .join("");
+
+
+
+    },
+
+
+
+    /*
+    Create Ending Section
+    */
+
+
+    renderEnding(){
+
+        const container =
+        $("#endingContent");
+
+        if(!container) return;
+
+
+
+        const messages =
+        APP_CONFIG.ending.message
+        .map(text=>{
+
+            return `<p>${text}</p>`
+
+        })
+        .join("");
+
+
+
+        container.innerHTML = `
+
+
+        <div class="tiny-label">
+
+        ${APP_CONFIG.ending.label}
+
+        </div>
+
+
+
+        <h2>
+
+        ${APP_CONFIG.ending.title}
+
+        </h2>
+
+
+
+        ${messages}
+
+
+
+        <h3>
+
+        ${APP_CONFIG.ending.emoji}
+
+        </h3>
+
+
+        `;
+
+
+    },
+
+
+
+    /*
+    Master Render Function
+    */
+
+
+    renderAll(){
+
+
+        this.renderWelcome();
+
+        this.renderLetter();
+
+        this.renderEnvelope();
+
+        this.renderGallery();
+
+        this.renderEnding();
+
+
+    }
+
+
+};
 /*==============================================================
 ELEMENTS
 ==============================================================*/
@@ -54,15 +354,7 @@ const photoCards = $$(".photo-card");
 CONFIG
 ==============================================================*/
 
-const SETTINGS = window.APP_CONFIG || {
 
-    particles: 26,
-
-    musicVolume: .45,
-
-    galleryDelay: 180
-
-};
 
 /*==============================================================
 STATE
@@ -682,7 +974,10 @@ function initializeEnvelopeAccessibility() {
 
 }
 
-function initialize() {
+function initialize(){
+
+    ContentRenderer.renderAll();
+
 
     buildParticles();
 

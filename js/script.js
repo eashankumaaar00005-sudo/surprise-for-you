@@ -492,15 +492,11 @@ behavior:"smooth"
 
 
 /*==================================================
-    CREATE GALLERY
+    CREATE GALLERY (SAFE VERSION)
 ==================================================*/
 
-
 const gallery =
-document.getElementById(
-"galleryGrid"
-);
-
+document.getElementById("galleryGrid");
 
 
 CONFIG.photos.forEach(
@@ -514,26 +510,34 @@ document.createElement("div");
 card.className="photo-card reveal";
 
 
+const img =
+document.createElement("img");
 
-card.innerHTML = `
 
-<img src="${photo}" alt="Memory ${index+1}">
+img.src = photo;
 
-`;
+img.alt =
+`Memory ${index+1}`;
 
+
+img.loading="lazy";
+
+
+img.onerror = function(){
+
+this.style.display="none";
+
+};
+
+
+card.appendChild(img);
 
 
 gallery.appendChild(card);
 
 
 
-}
-);
-
-
-
-
-
+});
 /*==================================================
     SCROLL ANIMATIONS
 ==================================================*/

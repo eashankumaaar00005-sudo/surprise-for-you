@@ -422,63 +422,74 @@ gsap.timeline();
 tl.from(
 ".hero-card",
 {
-
 opacity:0,
-
-y:80,
-
-duration:1.3,
-
+y:100,
+scale:.95,
+duration:1.5,
 ease:"power4.out"
-
 }
 )
+
 
 
 .from(
 ".badge",
 {
-
 opacity:0,
-
-scale:.5,
-
-duration:.7
-
+y:-30,
+duration:.8
 },
 "-=.8"
 )
 
 
+
 .from(
-".envelope",
+".hero-card h1",
 {
-
 opacity:0,
-
-scale:.5,
-
-rotationY:180,
-
-duration:1.4,
-
-ease:"back.out"
-
+y:60,
+filter:"blur(15px)",
+duration:1.2,
+ease:"power3.out"
 },
 "-=.5"
 )
 
 
+
+.from(
+".hero-card p",
+{
+opacity:0,
+y:40,
+duration:1
+},
+"-=.7"
+)
+
+
+
+.from(
+".envelope",
+{
+opacity:0,
+scale:.5,
+rotationY:180,
+duration:1.6,
+ease:"back.out"
+},
+"-=.5"
+)
+
+
+
 .from(
 "#startBtn",
 {
-
 opacity:0,
-
 y:30,
-
-duration:.8
-
+duration:1
 },
 "-=.5"
 );
@@ -486,14 +497,6 @@ duration:.8
 
 
 }
-
-
-
-
-
-
-
-
 /*==================================================
     ENVELOPE OPEN
 ==================================================*/

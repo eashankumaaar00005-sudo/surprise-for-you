@@ -27,7 +27,11 @@ font-family:"Poppins",sans-serif;
 
 overflow-x:hidden;
 
+overflow-y:auto;
+
 min-height:100vh;
+
+position:relative;
 
 }
 
@@ -1708,12 +1712,15 @@ display:none;
 
 /* disable heavy tilt on mobile */
 
+@media(max-width:600px){
+
 .photo-card,
 .glass{
 
-transform:none!important;
+transform:none;
 
 }
+
 
 
 /* better typography */
@@ -1766,5 +1773,32 @@ to{
 opacity:1;
 
 }
+
+}
+@media(max-width:600px){
+
+
+.section{
+
+min-height:auto;
+
+padding:80px 15px;
+
+display:flex;
+
+}
+
+
+.hero,
+.letter,
+.journey,
+.gallery,
+.message,
+.final{
+
+min-height:100vh;
+
+}
+
 
 }

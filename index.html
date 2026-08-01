@@ -1,478 +1,137 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!--
-        ============================================================
-        A Secret Journey
-        Premium Interactive Romantic Experience
-        Mobile First
-        ============================================================
-    -->
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
+<meta name="theme-color" content="#0B0710" />
+<title>A Secret Journey</title>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<!-- Fonts: Cormorant Garamond for the emotional / display voice, Manrope for the quiet UI voice -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <title>A Secret Journey</title>
-
-    <meta name="theme-color" content="#0B0B10">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
-    <meta
-        name="description"
-        content="A premium interactive romantic digital surprise."
-    >
-
-    <!-- Preload -->
-    <link rel="preload" href="css/style.css" as="style">
-    <link rel="preload" href="js/script.js" as="script">
-
-    <!-- Google Font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/style.css" />
 </head>
-
 <body>
 
-<!-- ========================================================= -->
-<!-- Animated Background -->
-<!-- ========================================================= -->
-
-<div class="background">
-
-    <div class="gradient-layer"></div>
-
-    <div class="glow glow-1"></div>
-    <div class="glow glow-2"></div>
-    <div class="glow glow-3"></div>
-
-    <div class="particles" id="particles"></div>
-
-</div>
-
-<!-- ========================================================= -->
-<!-- Main App -->
-<!-- ========================================================= -->
-
-<main id="app">
-
-<!-- ========================================================= -->
-<!-- Welcome Screen -->
-<!-- ========================================================= -->
-
-<section
-class="screen welcome-screen active"
-id="welcome">
-
-<div class="glass-panel">
-
-<div class="tiny-label">
-A Private Experience
-</div>
-
-<h1 class="hero-title">
-A Secret Journey
-</h1>
-
-<p class="hero-subtitle">
-
-Some moments deserve
-more than words.
-
-This one was made
-only for you.
-
-</p>
-
-<button
-id="startJourney"
-class="primary-btn"
-aria-label="Open My Letter">
-
-<span>Open My Letter</span>
-
-</button>
-
-</div>
-
-</section>
-
-<!-- ========================================================= -->
-<!-- Envelope Scene -->
-<!-- ========================================================= -->
-
-<section
-class="screen envelope-screen"
-id="envelopeScene">
-
-<div class="scene-wrapper">
-
-<div class="envelope-container">
-
-<div
-class="envelope"
-id="envelope">
-
-<div class="envelope-shadow"></div>
-
-<div class="envelope-back"></div>
-
-<div
-class="envelope-letter-slot">
-
-<div
-class="letter-preview">
-
-<div class="paper-line"></div>
-<div class="paper-line"></div>
-<div class="paper-line short"></div>
-
-</div>
-
-</div>
-
-<div
-class="envelope-front">
-
-</div>
-
-<div
-class="envelope-flap">
-
-</div>
-
-</div>
-
-</div>
-
-<div class="instruction">
-
-Tap the envelope
-
-</div>
-
-</div>
-
-</section>
-
-<!-- ========================================================= -->
-<!-- Letter -->
-<!-- ========================================================= -->
-
-<section
-class="screen letter-screen"
-id="letterScene">
-
-<div class="letter-wrapper">
-
-<article
-class="letter-paper"
-id="letterPaper">
-
-<div class="paper-top-glow"></div>
-
-<div class="paper-content">
-
-<div class="letter-date">
-
-Today
-
-</div>
-
-<h2>
-
-Dear You,
-
-</h2>
-
-<p>
-
-There are thousands of ordinary moments in life.
-
-Then there are the rare ones...
-
-the kind that quietly become unforgettable.
-
-</p>
-
-<p>
-
-This journey isn't about destinations.
-
-It's about memories,
-laughter,
-unexpected smiles,
-and every little feeling
-that slowly became something beautiful.
-
-</p>
-
-<p>
-
-Keep scrolling.
-
-The best part is still waiting.
-
-</p>
-
-<div class="signature">
-
-With all my heart ❤️
-
-</div>
-
-</div>
-
-</article>
-
-</div>
-
-</section>
-
-<!-- ========================================================= -->
-<!-- Gallery -->
-<!-- ========================================================= -->
-
-<section
-class="screen gallery-screen"
-id="gallery">
-
-<div class="section-header">
-
-<div class="tiny-label">
-
-Captured Moments
-
-</div>
-
-<h2>
-
-Pieces of Our Story
-
-</h2>
-
-</div>
-
-<div
-class="gallery-list">
-
-<!-- CARD 1 -->
-
-<figure class="photo-card">
-
-<img
-loading="lazy"
-src="assets/photos/photo1.jpg"
-alt="Memory One">
-
-<figcaption>
-
-Every beginning feels magical.
-
-</figcaption>
-
-</figure>
-
-<!-- CARD 2 -->
-
-<figure class="photo-card">
-
-<img
-loading="lazy"
-src="assets/photos/photo2.jpg"
-alt="Memory Two">
-
-<figcaption>
-
-Smiles become memories.
-
-</figcaption>
-
-</figure>
-
-<!-- CARD 3 -->
-
-<figure class="photo-card">
-
-<img
-loading="lazy"
-src="assets/photos/photo3.jpg"
-alt="Memory Three">
-
-<figcaption>
-
-The little moments matter most.
-
-</figcaption>
-
-</figure>
-
-<!-- CARD 4 -->
-
-<figure class="photo-card">
-
-<img
-loading="lazy"
-src="assets/photos/photo4.jpg"
-alt="Memory Four">
-
-<figcaption>
-
-Every journey feels lighter together.
-
-</figcaption>
-
-</figure>
-
-<!-- CARD 5 -->
-
-<figure class="photo-card">
-
-<img
-loading="lazy"
-src="assets/photos/photo5.jpg"
-alt="Memory Five">
-
-<figcaption>
-
-Some stories deserve forever.
-
-</figcaption>
-
-</figure>
-
-</div>
-
-</section>
-
-<!-- ========================================================= -->
-<!-- Final Message -->
-<!-- ========================================================= -->
-
-<section
-class="screen ending-screen"
-id="ending">
-
-<div class="glass-panel ending-card">
-
-<div class="tiny-label">
-
-One Last Thing
-
-</div>
-
-<h2>
-
-Thank You
-
-</h2>
-
-<p>
-
-Thank you
-for every smile,
-every conversation,
-every unforgettable memory,
-and every tiny moment
-that quietly became part of my life.
-
-</p>
-
-<p>
-
-No matter where life takes us...
-
-this journey will always remain special.
-
-</p>
-
-<h3>
-
-❤️
-
-</h3>
-
-</div>
-
-</section>
-
-</main>
-
-<!-- ========================================================= -->
-<!-- Music -->
-<!-- ========================================================= -->
-
-<audio
-id="bgMusic"
-loop
-preload="auto">
-
-<source
-src="assets/music/music.mp3"
-type="audio/mpeg">
-
-</audio>
-
-<!-- Floating Music Button -->
-
-<button
-id="musicButton"
-class="music-button"
-aria-label="Toggle Music">
-
-<svg
-viewBox="0 0 24 24"
-fill="none"
-stroke="currentColor"
-stroke-width="2">
-
-<path
-d="M9 18V5l12-2v13"/>
-
-<circle
-cx="6"
-cy="18"
-r="3"/>
-
-<circle
-cx="18"
-cy="16"
-r="3"/>
-
-</svg>
-
-</button>
-
-<!-- Scroll Progress -->
-
-<div
-class="scroll-progress">
-
-<div
-id="progressBar">
-
-</div>
-
-</div>
-
-<!-- Blur Overlay -->
-
-<div
-id="blurOverlay">
-
-</div>
-
-<!-- Configuration -->
-
-<script src="config.js"></script>
-
-<!-- App -->
-
-<script src="js/script.js"></script>
-
+  <!-- ============================================================
+       AMBIENT BACKGROUND — soft moving glows + drifting particles
+       Sits behind everything, fixed, never intercepts touch/clicks
+  ============================================================= -->
+  <div class="ambient" aria-hidden="true">
+    <div class="ambient__glow ambient__glow--one"></div>
+    <div class="ambient__glow ambient__glow--two"></div>
+    <div class="ambient__glow ambient__glow--three"></div>
+    <canvas id="particles"></canvas>
+  </div>
+
+  <!-- ============================================================
+       APP — one mobile viewport, screens are swapped by script.js
+  ============================================================= -->
+  <main class="app" id="app">
+
+    <!-- ---------- SCREEN 1 — WELCOME ---------- -->
+    <section class="screen screen--welcome is-active" data-screen="welcome" aria-label="Welcome">
+      <div class="screen__inner">
+        <p class="eyebrow" data-fill="welcome.eyebrow">A Secret Journey</p>
+        <h1 class="display display--xl" data-fill="welcome.heading">For You</h1>
+        <p class="subtitle" data-fill="welcome.subtitle">Something has been waiting for you to find it.</p>
+
+        <button class="btn btn--primary" id="btn-open-letter" type="button">
+          <span data-fill="welcome.buttonLabel">Open My Letter</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ---------- SCREEN 2 — ENVELOPE ---------- -->
+    <section class="screen screen--envelope" data-screen="envelope" aria-label="Envelope">
+      <div class="screen__inner">
+        <p class="envelope-to" data-fill="envelope.to">To the one who matters most</p>
+
+        <button class="envelope" id="envelope" type="button" aria-label="Open the envelope">
+          <span class="envelope__shadow"></span>
+          <span class="envelope__body">
+            <span class="envelope__back"></span>
+            <span class="envelope__letter-peek"></span>
+            <span class="envelope__flap"></span>
+            <span class="envelope__seal" data-fill="envelope.seal">❤</span>
+          </span>
+        </button>
+
+        <p class="envelope-hint" id="envelope-hint" data-fill="envelope.hint">Tap the envelope to open it</p>
+      </div>
+    </section>
+
+    <!-- ---------- SCREEN 3 — LETTER ---------- -->
+    <section class="screen screen--letter" data-screen="letter" aria-label="Letter">
+      <div class="screen__inner screen__inner--letter">
+        <div class="letter" id="letter">
+          <div class="letter__paper">
+            <p class="letter__greeting" data-fill="letter.greeting">My Dearest,</p>
+            <div class="letter__body" id="letter-body"><!-- paragraphs injected by script.js --></div>
+            <p class="letter__signature" data-fill="letter.signature">Always yours</p>
+          </div>
+        </div>
+
+        <button class="btn btn--ghost" id="btn-to-gallery" type="button">
+          <span>Continue</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ---------- SCREEN 4 — GALLERY ---------- -->
+    <section class="screen screen--gallery" data-screen="gallery" aria-label="Photo gallery">
+      <div class="screen__inner screen__inner--gallery">
+        <header class="gallery__header">
+          <h2 class="display display--lg" data-fill="gallery.heading">Moments We've Made</h2>
+          <p class="subtitle" data-fill="gallery.subtitle">A few frames from our story so far.</p>
+        </header>
+
+        <div class="gallery__scroll" id="gallery-scroll">
+          <div class="gallery__track" id="gallery-track"><!-- cards injected by script.js --></div>
+
+          <button class="btn btn--primary btn--in-flow" id="btn-to-final" type="button">
+            <span>Continue</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- SCREEN 5 — FINAL ---------- -->
+    <section class="screen screen--final" data-screen="final" aria-label="Final message">
+      <div class="screen__inner">
+        <p class="eyebrow">The End, and a Beginning</p>
+        <h2 class="display display--xl" id="final-heading" data-fill="final.heading">I Love You</h2>
+        <p class="final-message" id="final-message" data-fill="final.message">
+          Thank you for being the softest, safest place I know.
+        </p>
+        <p class="letter__signature letter__signature--final" data-fill="final.signature">— Yours, always</p>
+
+        <div class="final-actions">
+          <button class="btn btn--ghost" id="btn-replay" type="button">
+            <span data-fill="final.replayLabel">Read It Again</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       MUSIC CONTROL — floating, persists once the letter is open
+  ============================================================= -->
+  <button class="music-toggle" id="music-toggle" type="button" aria-label="Play music" aria-pressed="false" hidden>
+    <span class="music-toggle__icon" aria-hidden="true">
+      <span class="music-bar"></span>
+      <span class="music-bar"></span>
+      <span class="music-bar"></span>
+    </span>
+    <span class="music-toggle__label" id="music-label">Play Music</span>
+  </button>
+  <audio id="bg-music" preload="none" loop></audio>
+
+  <script src="config.js"></script>
+  <script src="js/script.js"></script>
 </body>
 </html>

@@ -623,7 +623,11 @@ box-shadow:
 
 }
 
+body.locked{
 
+overflow:hidden;
+
+}
 /* side folds */
 
 .fold-left,

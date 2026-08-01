@@ -1113,18 +1113,7 @@ CONFIG.finalMessage,
 
 
 },900);
-
-
-
 });
-
-
-
-
-
-
-
-
 /*==================================================
     REPLAY
 ==================================================*/
@@ -1140,10 +1129,56 @@ document
 
 
 location.reload();
-
-
 });
+/*==================================================
+ JOURNEY ANIMATION
+==================================================*/
+
+
+gsap.from(
+".stop",
+{
+
+scale:0,
+
+opacity:0,
+
+duration:.8,
+
+stagger:.3,
+
+scrollTrigger:{
+
+trigger:".journey-line",
+
+start:"top 75%"
+
+}
+
+}
+);
 
 
 
+gsap.from(
+".road",
+{
+
+scaleX:0,
+
+transformOrigin:"left",
+
+duration:1,
+
+stagger:.4,
+
+scrollTrigger:{
+
+trigger:".journey-line",
+
+start:"top 75%"
+
+}
+
+}
 });

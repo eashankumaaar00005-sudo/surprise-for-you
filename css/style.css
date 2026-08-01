@@ -1,57 +1,68 @@
-/* ==========================================
-   GOOGLE FONT
-========================================== */
+/* =====================================================
+   A Secret Journey
+   Mobile First CSS
+   Part 1
+===================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
 
-
-/* ==========================================
+/* =====================================================
    RESET
-========================================== */
+===================================================== */
 
-*{
+*,
+*::before,
+*::after{
     margin:0;
     padding:0;
     box-sizing:border-box;
 }
 
 html{
+    font-size:16px;
     scroll-behavior:smooth;
+    -webkit-tap-highlight-color:transparent;
 }
 
 body{
     font-family:'Poppins',sans-serif;
-    background:#090d18;
-    color:#fff;
+    background:#0a1020;
+    color:#ffffff;
     overflow:hidden;
     min-height:100vh;
+    min-height:100dvh;
 }
 
-
-/* ==========================================
+/* =====================================================
    VARIABLES
-========================================== */
+===================================================== */
 
 :root{
 
-    --bg:#090d18;
+    --bg:#09111d;
 
-    --bg2:#10192d;
+    --bg-light:#111d33;
 
     --primary:#ff9f43;
 
+    --primary-dark:#f58b17;
+
     --white:#ffffff;
 
-    --text:#d8d8d8;
+    --text:#d5d9e4;
 
-    --radius:20px;
+    --radius:22px;
+
+    --transition:.35s;
+
+    --shadow:
+        0 25px 60px rgba(0,0,0,.28);
 
 }
 
-
-/* ==========================================
-   MAIN APP
-========================================== */
+/* =====================================================
+   APP
+===================================================== */
 
 .app{
 
@@ -75,10 +86,9 @@ body{
 
 }
 
-
-/* ==========================================
-   BACKGROUND
-========================================== */
+/* =====================================================
+   PREMIUM BACKGROUND
+===================================================== */
 
 .app::before{
 
@@ -90,16 +100,22 @@ body{
 
     background:
 
-    radial-gradient(circle at top,#1d2f55 0%,transparent 40%),
+    radial-gradient(circle at top,#1b315b 0%,transparent 40%),
 
-    radial-gradient(circle at bottom,#17253d 0%,transparent 45%),
+    radial-gradient(circle at bottom,#152744 0%,transparent 45%),
 
-    linear-gradient(180deg,#09111d,#090d18);
+    linear-gradient(
+        180deg,
+        #09111d,
+        #08101b,
+        #060b14
+    );
 
-    z-index:-2;
+    z-index:-3;
 
 }
 
+/* Glow */
 
 .app::after{
 
@@ -107,33 +123,31 @@ body{
 
     position:absolute;
 
-    width:280px;
+    width:300px;
 
-    height:280px;
+    height:300px;
 
     background:#ff9f43;
 
-    opacity:.08;
-
-    filter:blur(120px);
-
     border-radius:50%;
 
-    top:-80px;
+    opacity:.08;
 
-    left:-60px;
+    filter:blur(110px);
+
+    top:-90px;
+
+    left:-70px;
 
     animation:floatGlow 8s ease-in-out infinite;
 
-    z-index:-1;
+    z-index:-2;
 
 }
 
-
-
-/* ==========================================
-   WELCOME CARD
-========================================== */
+/* =====================================================
+   CONTENT
+===================================================== */
 
 .welcome-content{
 
@@ -143,19 +157,31 @@ body{
 
     text-align:center;
 
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
 }
 
+/* =====================================================
+   ICON
+===================================================== */
 
 .welcome-icon{
 
-    font-size:52px;
-
-    display:block;
+    font-size:54px;
 
     margin-bottom:18px;
 
+    animation:iconFloat 4s ease-in-out infinite;
+
 }
 
+/* =====================================================
+   TITLE
+===================================================== */
 
 h1{
 
@@ -165,28 +191,31 @@ h1{
 
     line-height:1.2;
 
-    margin-bottom:14px;
+    letter-spacing:.3px;
+
+    margin-bottom:16px;
 
 }
 
+/* =====================================================
+   SUBTITLE
+===================================================== */
 
 p{
 
     color:var(--text);
 
-    line-height:1.7;
+    font-size:.96rem;
 
-    font-size:.95rem;
+    line-height:1.8;
 
-    margin-bottom:42px;
+    margin-bottom:40px;
 
 }
 
-
-
-/* ==========================================
+/* =====================================================
    BUTTON
-========================================== */
+===================================================== */
 
 .primary-btn{
 
@@ -198,9 +227,11 @@ p{
 
     border-radius:18px;
 
-    cursor:pointer;
-
-    background:linear-gradient(135deg,#ffb055,#ff8f24);
+    background:linear-gradient(
+        135deg,
+        #ffb458,
+        #ff9324
+    );
 
     color:#fff;
 
@@ -208,14 +239,20 @@ p{
 
     font-weight:600;
 
-    transition:.25s;
+    cursor:pointer;
+
+    transition:var(--transition);
 
     box-shadow:
-
-    0 10px 30px rgba(255,159,67,.30);
+        0 16px 40px rgba(255,159,67,.35);
 
 }
 
+.primary-btn:hover{
+
+    transform:translateY(-2px);
+
+}
 
 .primary-btn:active{
 
@@ -223,191 +260,244 @@ p{
 
 }
 
+.primary-btn:disabled{
 
+    opacity:.65;
 
-/* ==========================================
-   GLOW ANIMATION
-========================================== */
+    pointer-events:none;
+
+}
+
+/* =====================================================
+   ANIMATIONS
+===================================================== */
 
 @keyframes floatGlow{
 
     0%{
 
-        transform:translateY(0px);
+        transform:
+        translateY(0px);
 
     }
 
     50%{
 
-        transform:translateY(25px);
+        transform:
+        translateY(35px);
 
     }
 
     100%{
 
-        transform:translateY(0px);
+        transform:
+        translateY(0px);
 
     }
 
 }
 
+@keyframes iconFloat{
 
+    0%{
 
-/* ==========================================
+        transform:
+        translateY(0);
+
+    }
+
+    50%{
+
+        transform:
+        translateY(-8px);
+
+    }
+
+    100%{
+
+        transform:
+        translateY(0);
+
+    }
+
+}
+
+/* =====================================================
    MOBILE
-========================================== */
+===================================================== */
 
 @media (max-width:390px){
 
     h1{
 
-        font-size:1.7rem;
+        font-size:1.75rem;
 
     }
 
     p{
 
-        font-size:.9rem;
+        font-size:.92rem;
 
     }
 
 }
-/* ===============================
-   ENVELOPE
-================================ */
+/*==============================
+ENVELOPE
+==============================*/
 
 .envelope-wrapper{
-
-    display:flex;
-
-    justify-content:center;
-
-    margin:35px 0 45px;
-
+display:flex;
+justify-content:center;
+align-items:center;
+margin:20px 0 40px;
+perspective:1200px;
 }
 
 .envelope{
-
-    position:relative;
-
-    width:220px;
-
-    height:145px;
-
-    animation:floatEnvelope 4s ease-in-out infinite;
-
+position:relative;
+width:220px;
+height:145px;
+transform-style:preserve-3d;
+animation:envelopeFloat 4s ease-in-out infinite;
+filter:drop-shadow(0 20px 35px rgba(0,0,0,.35));
 }
 
-/* Letter */
+.back{
+position:absolute;
+inset:0;
+background:linear-gradient(180deg,#ffbe63,#f39a2b);
+border-radius:12px;
+z-index:1;
+}
 
 .letter{
-
-    position:absolute;
-
-    left:50%;
-
-    bottom:10px;
-
-    transform:translateX(-50%);
-
-    width:170px;
-
-    height:110px;
-
-    background:white;
-
-    border-radius:12px;
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    font-size:30px;
-
-    box-shadow:
-
-    0 20px 40px rgba(0,0,0,.25);
-
-    z-index:1;
-
+position:absolute;
+left:50%;
+bottom:8px;
+transform:translateX(-50%);
+width:170px;
+height:115px;
+z-index:2;
+transition:.8s ease;
 }
 
-/* Body */
-
-.envelope-body{
-
-    position:absolute;
-
-    inset:0;
-
-    background:linear-gradient(
-
-        180deg,
-
-        #ffbe63,
-
-        #f89b2c
-
-    );
-
-    border-radius:10px;
-
-    z-index:2;
-
+.letter-paper{
+width:100%;
+height:100%;
+background:#fffdf8;
+border-radius:10px;
+display:flex;
+justify-content:center;
+align-items:center;
+font-size:34px;
+color:#ff5a7a;
+box-shadow:0 10px 25px rgba(0,0,0,.18);
+position:relative;
+overflow:hidden;
 }
 
-/* Top */
-
-.envelope-top{
-
-    position:absolute;
-
-    top:0;
-
-    left:0;
-
-    width:100%;
-
-    height:75px;
-
-    background:#ffc97a;
-
-    clip-path:polygon(
-
-        0 0,
-
-        50% 100%,
-
-        100% 0
-
-    );
-
-    z-index:3;
-
+.letter-paper::before{
+content:"";
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:10px;
+background:linear-gradient(90deg,#ffe3a5,#fff5da,#ffe3a5);
+opacity:.9;
 }
 
-/* Floating */
+.bottom-fold{
+position:absolute;
+bottom:0;
+left:0;
+width:100%;
+height:100%;
+background:linear-gradient(180deg,#ffbb5d,#f59828);
+clip-path:polygon(0 100%,50% 42%,100% 100%);
+z-index:3;
+}
 
-@keyframes floatEnvelope{
+.left-fold{
+position:absolute;
+left:0;
+top:0;
+width:50%;
+height:100%;
+background:#f7a741;
+clip-path:polygon(0 0,100% 50%,0 100%);
+z-index:4;
+}
 
-    0%{
+.right-fold{
+position:absolute;
+right:0;
+top:0;
+width:50%;
+height:100%;
+background:#ee9830;
+clip-path:polygon(100% 0,0 50%,100% 100%);
+z-index:4;
+}
 
-        transform:translateY(0);
+.top-flap{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:82px;
+background:linear-gradient(180deg,#ffd089,#ffb95b);
+clip-path:polygon(0 0,50% 100%,100% 0);
+transform-origin:top;
+z-index:6;
+transition:1s cubic-bezier(.22,1,.36,1);
+backface-visibility:hidden;
+}
 
-    }
+.envelope::before{
+content:"";
+position:absolute;
+left:50%;
+bottom:-16px;
+transform:translateX(-50%);
+width:170px;
+height:26px;
+background:rgba(0,0,0,.22);
+filter:blur(18px);
+border-radius:50%;
+z-index:-1;
+}
 
-    50%{
+@keyframes envelopeFloat{
+0%{transform:translateY(0);}
+50%{transform:translateY(-10px);}
+100%{transform:translateY(0);}
+}
 
-        transform:translateY(-10px);
+/*==============================
+OPEN STATE
+==============================*/
 
-    }
+.envelope.open .top-flap{
+transform:rotateX(180deg);
+z-index:0;
+}
 
-    100%{
+.envelope.open .letter{
+transform:translateX(-50%) translateY(-90px);
+}
 
-        transform:translateY(0);
+/*==============================
+MOBILE
+==============================*/
 
-    }
-
+@media(max-width:390px){
+.envelope{
+width:190px;
+height:125px;
+}
+.letter{
+width:145px;
+height:100px;
+}
 }

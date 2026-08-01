@@ -1,406 +1,229 @@
 /*==============================================================
 A Secret Journey
 Premium Interactive Experience
+
 script.js
-Part 3.1
+Version 2.0
+Part 1/4
+
+Architecture:
+- DOM Utilities
+- Config System
+- Content Renderer
+- State Manager
 ==============================================================*/
 
 "use strict";
 
+
 /*==============================================================
-DOM CACHE
+DOM UTILITIES
 ==============================================================*/
 
-const $ = (selector, scope = document) => scope.querySelector(selector);
+const $ = (selector, scope = document) =>
+    scope.querySelector(selector);
+
 
 const $$ = (selector, scope = document) =>
     [...scope.querySelectorAll(selector)];
-/*==============================================================
-CONTENT RENDERER ENGINE
-==============================================================*/
 
-
-const ContentRenderer = {
-
-    /*
-    Create Welcome Screen
-    */
-
-    renderWelcome(){
-
-        const container = $("#welcomeContent");
-
-        if(!container || !APP_CONFIG) return;
-
-
-        container.innerHTML = `
-
-        <div class="tiny-label">
-            ${APP_CONFIG.welcome.label}
-        </div>
-
-
-        <h1 class="hero-title">
-            ${APP_CONFIG.welcome.title}
-        </h1>
-
-
-        <p class="hero-subtitle">
-            ${APP_CONFIG.welcome.subtitle}
-        </p>
-
-
-        <button
-        id="startJourney"
-        class="primary-btn"
-        aria-label="Open My Letter">
-
-            <span>
-            ${APP_CONFIG.welcome.button}
-            </span>
-
-        </button>
-
-        `;
-
-
-    },
-
-
-
-    /*
-    Create Letter Content
-    */
-
-
-    renderLetter(){
-
-        const container = $("#letterContent");
-
-        if(!container || !APP_CONFIG) return;
-
-
-        const paragraphs = 
-        APP_CONFIG.letter.paragraphs
-        .map(text => {
-
-            return `<p>${text}</p>`
-
-        })
-        .join("");
-
-
-
-        container.innerHTML = `
-
-
-        <div class="letter-date">
-
-            ${APP_CONFIG.letter.date}
-
-        </div>
-
-
-
-        <h2>
-
-            ${APP_CONFIG.letter.greeting}
-
-        </h2>
-
-
-
-        ${paragraphs}
-
-
-
-        <div class="signature">
-
-            ${APP_CONFIG.letter.signature}
-
-        </div>
-
-
-        `;
-
-
-    },
-
-
-
-    /*
-    Create Envelope Instruction
-    */
-
-
-    renderEnvelope(){
-
-        const instruction = 
-        $("#envelopeInstruction");
-
-
-        if(!instruction) return;
-
-
-        instruction.textContent = 
-        APP_CONFIG.envelope.instruction;
-
-
-    },
-
-
-
-    /*
-    Create Gallery
-    */
-
-
-    renderGallery(){
-
-        const list = $("#galleryList");
-
-
-        const header = $("#galleryHeader");
-
-
-        if(!list) return;
-
-
-
-        header.innerHTML = `
-
-        <div class="tiny-label">
-
-        ${APP_CONFIG.gallery.title}
-
-        </div>
-
-
-        <h2>
-
-        ${APP_CONFIG.gallery.heading}
-
-        </h2>
-
-        `;
-
-
-
-        list.innerHTML = 
-        APP_CONFIG.gallery.items
-        .map((item,index)=>{
-
-
-            return `
-
-            <figure 
-            class="photo-card"
-            data-index="${index}">
-
-
-                <img
-
-                loading="lazy"
-
-                src="${item.image}"
-
-                alt="${item.alt}"
-
-                >
-
-
-                <figcaption>
-
-                ${item.caption}
-
-                </figcaption>
-
-
-            </figure>
-
-
-            `;
-
-
-        })
-        .join("");
-
-
-
-    },
-
-
-
-    /*
-    Create Ending Section
-    */
-
-
-    renderEnding(){
-
-        const container =
-        $("#endingContent");
-
-        if(!container) return;
-
-
-
-        const messages =
-        APP_CONFIG.ending.message
-        .map(text=>{
-
-            return `<p>${text}</p>`
-
-        })
-        .join("");
-
-
-
-        container.innerHTML = `
-
-
-        <div class="tiny-label">
-
-        ${APP_CONFIG.ending.label}
-
-        </div>
-
-
-
-        <h2>
-
-        ${APP_CONFIG.ending.title}
-
-        </h2>
-
-
-
-        ${messages}
-
-
-
-        <h3>
-
-        ${APP_CONFIG.ending.emoji}
-
-        </h3>
-
-
-        `;
-
-
-    },
-
-
-
-    /*
-    Master Render Function
-    */
-
-
-    renderAll(){
-
-
-        this.renderWelcome();
-
-        this.renderLetter();
-
-        this.renderEnvelope();
-
-        this.renderGallery();
-
-        this.renderEnding();
-
-
-    }
-
-
-};
-/*==============================================================
-ELEMENTS
-==============================================================*/
-
-const app = $("#app");
-
-const startButton = $("#startJourney");
-
-const welcomeScreen = $("#welcome");
-
-const envelopeScreen = $("#envelopeScene");
-
-const letterScreen = $("#letterScene");
-
-const galleryScreen = $("#gallery");
-
-const endingScreen = $("#ending");
-
-const envelope = $("#envelope");
-
-const letterPaper = $("#letterPaper");
-
-const blurOverlay = $("#blurOverlay");
-
-const progressBar = $("#progressBar");
-
-const particlesContainer = $("#particles");
-
-const musicButton = $("#musicButton");
-
-const bgMusic = $("#bgMusic");
-
-const photoCards = $$(".photo-card");
 
 /*==============================================================
 CONFIG
 ==============================================================*/
 
+const CONFIG = window.APP_CONFIG || {
 
+    particles: 26,
 
-/*==============================================================
-STATE
-==============================================================*/
-
-const state = {
-
-    started:false,
-
-    envelopeOpened:false,
-
-    musicPlaying:false
+    music: {
+        volume: 0.45
+    }
 
 };
 
+
 /*==============================================================
-HELPERS
+APP SETTINGS
 ==============================================================*/
 
-function wait(ms){
+const SETTINGS = {
 
-    return new Promise(resolve=>setTimeout(resolve,ms));
+    particles:
+        CONFIG.particles ?? 26,
+
+    musicVolume:
+        CONFIG.music?.volume ?? 0.45,
+
+    galleryDelay:
+        CONFIG.galleryDelay ?? 180
+
+};
+
+
+
+/*==============================================================
+STATE MANAGER
+==============================================================*/
+
+
+const STATE = {
+
+
+    currentScene:
+        "welcome",
+
+
+    started:
+        false,
+
+
+    envelopeOpened:
+        false,
+
+
+    letterOpened:
+        false,
+
+
+    musicPlaying:
+        false
+
+
+};
+
+
+
+/*==============================================================
+DOM ELEMENT CACHE
+==============================================================*/
+
+
+const DOM = {
+
+
+    app:
+        $("#app"),
+
+
+    welcome:
+        $("#welcome"),
+
+
+    welcomeContent:
+        $("#welcomeContent"),
+
+
+    envelopeScene:
+        $("#envelopeScene"),
+
+
+    envelope:
+        $("#envelope"),
+
+
+    envelopeInstruction:
+        $("#envelopeInstruction"),
+
+
+    letterScene:
+        $("#letterScene"),
+
+
+    letterPaper:
+        $("#letterPaper"),
+
+
+    letterContent:
+        $("#letterContent"),
+
+
+    gallery:
+        $("#gallery"),
+
+
+    galleryHeader:
+        $("#galleryHeader"),
+
+
+    galleryList:
+        $("#galleryList"),
+
+
+    ending:
+        $("#ending"),
+
+
+    endingContent:
+        $("#endingContent"),
+
+
+    blurOverlay:
+        $("#blurOverlay"),
+
+
+    particles:
+        $("#particles"),
+
+
+    musicButton:
+        $("#musicButton"),
+
+
+    music:
+        $("#bgMusic"),
+
+
+    progress:
+        $("#progressBar")
+
+};
+
+
+
+/*==============================================================
+HELPER FUNCTIONS
+==============================================================*/
+
+
+function wait(time){
+
+    return new Promise(resolve => {
+
+        setTimeout(resolve,time);
+
+    });
 
 }
 
 
 
-function show(el){
+function show(element){
 
-    el.classList.remove("hidden");
+    if(!element) return;
 
-}
-
-
-
-function hide(el){
-
-    el.classList.add("hidden");
+    element.classList.remove("hidden");
 
 }
 
 
 
-function easeScroll(target){
+function hide(element){
 
-    target.scrollIntoView({
+    if(!element) return;
+
+    element.classList.add("hidden");
+
+}
+
+
+
+function scrollTo(element){
+
+    if(!element) return;
+
+
+    element.scrollIntoView({
 
         behavior:"smooth",
 
@@ -413,194 +236,744 @@ function easeScroll(target){
 
 
 /*==============================================================
-PARTICLE SYSTEM
+CONTENT RENDERER ENGINE
 ==============================================================*/
 
-function random(min,max){
 
-    return Math.random()*(max-min)+min;
-
-}
+const Renderer = {
 
 
-
-function createParticle(){
-
-    const particle=document.createElement("span");
-
-    particle.className="particle";
+    renderWelcome(){
 
 
+        if(!DOM.welcomeContent) return;
 
-    const size=random(2,6);
 
-    const duration=random(16,34);
+        const data = CONFIG.welcome;
 
-    const delay=random(-25,0);
 
-    const left=random(0,100);
+        DOM.welcomeContent.innerHTML = `
+
+
+        <div class="tiny-label">
+
+            ${data.label}
+
+        </div>
 
 
 
-    particle.style.width=`${size}px`;
+        <h1 class="hero-title">
 
-    particle.style.height=`${size}px`;
+            ${data.title}
 
-    particle.style.left=`${left}%`;
-
-    particle.style.bottom="-20px";
-
-    particle.style.animationDuration=`${duration}s`;
-
-    particle.style.animationDelay=`${delay}s`;
-
-    particle.style.opacity=random(.08,.35);
+        </h1>
 
 
 
-    particlesContainer.appendChild(particle);
+        <p class="hero-subtitle">
 
-}
+            ${data.subtitle}
 
-
-
-function buildParticles(){
-
-    particlesContainer.innerHTML="";
+        </p>
 
 
 
-    for(
+        <button
 
-        let i=0;
+        id="startJourney"
 
-        i<SETTINGS.particles;
+        class="primary-btn">
 
-        i++
 
-    ){
+            ${data.button}
 
-        createParticle();
+
+        </button>
+
+
+        `;
+
+
+    },
+
+
+
+    renderLetter(){
+
+
+        if(!DOM.letterContent) return;
+
+
+        const data = CONFIG.letter;
+
+
+        const paragraphs = data.paragraphs
+
+        .map(text =>
+
+            `<p>${text}</p>`
+
+        )
+
+        .join("");
+
+
+
+        DOM.letterContent.innerHTML = `
+
+
+        <div class="letter-date">
+
+        ${data.date}
+
+        </div>
+
+
+
+        <h2>
+
+        ${data.greeting}
+
+        </h2>
+
+
+
+        ${paragraphs}
+
+
+
+        <div class="signature">
+
+        ${data.signature}
+
+        </div>
+
+
+        `;
+
+
+    },
+
+
+    renderEnvelope(){
+
+
+        if(!DOM.envelopeInstruction)
+            return;
+
+
+        DOM.envelopeInstruction.textContent =
+            CONFIG.envelope.instruction;
+
+
+    },
+
+
+
+    renderGallery(){
+
+
+        if(!DOM.galleryList)
+            return;
+
+
+
+        const data =
+            CONFIG.gallery;
+
+
+
+        DOM.galleryHeader.innerHTML = `
+
+
+        <div class="tiny-label">
+
+        ${data.title}
+
+        </div>
+
+
+        <h2>
+
+        ${data.heading}
+
+        </h2>
+
+
+        `;
+
+
+
+        DOM.galleryList.innerHTML =
+
+        data.items.map((item,index)=>{
+
+
+            return `
+
+
+            <figure
+
+            class="photo-card"
+
+            data-index="${index}">
+
+
+            <img
+
+            src="${item.image}"
+
+            loading="lazy"
+
+            alt="${item.alt}">
+
+
+            <figcaption>
+
+            ${item.caption}
+
+            </figcaption>
+
+
+            </figure>
+
+
+            `;
+
+
+        }).join("");
+
+
+
+    },
+
+
+
+    renderEnding(){
+
+
+        if(!DOM.endingContent)
+            return;
+
+
+
+        const data =
+            CONFIG.ending;
+
+
+
+        DOM.endingContent.innerHTML = `
+
+
+        <div class="tiny-label">
+
+        ${data.label}
+
+        </div>
+
+
+
+        <h2>
+
+        ${data.title}
+
+        </h2>
+
+
+
+        ${
+            data.message
+            .map(text=>`<p>${text}</p>`)
+            .join("")
+        }
+
+
+
+        <h3>
+
+        ${data.emoji}
+
+        </h3>
+
+
+        `;
+
+
+    },
+
+
+
+    renderAll(){
+
+
+        this.renderWelcome();
+
+        this.renderEnvelope();
+
+        this.renderLetter();
+
+        this.renderGallery();
+
+        this.renderEnding();
+
 
     }
 
-}
+
+};
+/*==============================================================
+SCENE CONTROLLER
+==============================================================*/
+
+
+const SceneController = {
+
+
+    open(scene){
+
+        show(scene);
+
+    },
+
+
+    close(scene){
+
+        hide(scene);
+
+    },
+
+
+    change(from,to){
+
+
+        hide(from);
+
+
+        show(to);
+
+
+        scrollTo(to);
+
+
+    }
+
+
+};
 
 
 
 /*==============================================================
-BACKGROUND MUSIC
+BUTTON EVENTS
 ==============================================================*/
 
-function updateMusicUI(){
 
-    musicButton.classList.toggle(
+function bindEvents(){
 
-        "playing",
 
-        state.musicPlaying
-
-    );
-
-}
+    const startButton =
+        $("#startJourney");
 
 
 
-async function playMusic(){
+    if(startButton){
 
-    try{
 
-        bgMusic.volume=SETTINGS.musicVolume;
+        startButton.addEventListener(
 
-        await bgMusic.play();
+            "click",
 
-        state.musicPlaying=true;
+            startJourney,
 
-        updateMusicUI();
-
-    }
-
-    catch(err){
-
-        console.warn(
-
-            "Autoplay prevented.",
-
-            err
+            {
+                passive:true
+            }
 
         );
 
+
     }
 
+
+
+    if(DOM.envelope){
+
+
+        DOM.envelope.addEventListener(
+
+            "click",
+
+            openEnvelope,
+
+            {
+                passive:true
+            }
+
+        );
+
+
+    }
+
+
+
+    if(DOM.musicButton){
+
+
+        DOM.musicButton.addEventListener(
+
+            "click",
+
+            toggleMusic,
+
+            {
+                passive:true
+            }
+
+        );
+
+
+    }
+
+
 }
 
 
 
-function pauseMusic(){
 
-    bgMusic.pause();
 
-    state.musicPlaying=false;
+/*==============================================================
+WELCOME TRANSITION
+==============================================================*/
 
-    updateMusicUI();
+
+async function startJourney(){
+
+
+    if(STATE.started)
+        return;
+
+
+
+    STATE.started = true;
+
+
+
+    const button =
+        $("#startJourney");
+
+
+
+    if(button){
+
+
+        button.style.opacity="0";
+
+        button.style.pointerEvents="none";
+
+
+    }
+
+
+
+    await wait(350);
+
+
+
+    SceneController.change(
+
+        DOM.welcome,
+
+        DOM.envelopeScene
+
+    );
+
+
+
+    STATE.currentScene =
+        "envelope";
+
+
 
 }
 
 
 
-function toggleMusic(){
 
-    if(state.musicPlaying){
 
-        pauseMusic();
 
-    }else{
+
+/*==============================================================
+ENVELOPE EXPERIENCE
+==============================================================*/
+
+
+async function openEnvelope(){
+
+
+    if(STATE.envelopeOpened)
+        return;
+
+
+
+    STATE.envelopeOpened=true;
+
+
+
+    /*
+    Soft bounce
+    */
+
+
+    DOM.envelope.classList.add(
+        "bounce"
+    );
+
+
+
+    await wait(650);
+
+
+
+    DOM.envelope.classList.remove(
+        "bounce"
+    );
+
+
+
+    /*
+    Background blur
+    */
+
+
+    document.body.classList.add(
+        "blur-background"
+    );
+
+
+    DOM.blurOverlay.classList.add(
+        "active"
+    );
+
+
+
+    await wait(180);
+
+
+
+    /*
+    Open flap
+    */
+
+
+    DOM.envelope.classList.add(
+        "open"
+    );
+
+
+
+    await wait(850);
+
+
+
+    revealLetter();
+
+
+}
+
+
+
+
+
+
+/*==============================================================
+LETTER REVEAL
+==============================================================*/
+
+
+async function revealLetter(){
+
+
+    STATE.letterOpened=true;
+
+
+
+    show(
+        DOM.letterScene
+    );
+
+
+
+    await wait(120);
+
+
+
+    scrollTo(
+        DOM.letterScene
+    );
+
+
+
+    await wait(500);
+
+
+
+    DOM.letterPaper.classList.add(
+        "revealed"
+    );
+
+
+
+    document.body.classList.add(
+        "letter-open"
+    );
+
+
+
+    await wait(500);
+
+
+
+    DOM.blurOverlay.classList.remove(
+        "active"
+    );
+
+
+
+    document.body.classList.remove(
+        "blur-background"
+    );
+
+
+
+    /*
+    Start music after user interaction
+    */
+
+
+    if(!STATE.musicPlaying){
 
         playMusic();
 
     }
 
+
+
+    await wait(1200);
+
+
+
+    show(
+        DOM.gallery
+    );
+
+
+
+    STATE.currentScene =
+        "gallery";
+
+
 }
 
 
 
-musicButton.addEventListener(
 
-    "click",
 
-    toggleMusic,
 
-    {passive:true}
+/*==============================================================
+KEYBOARD ACCESSIBILITY
+==============================================================*/
 
-);
+
+document.addEventListener(
+
+"keydown",
+
+(event)=>{
+
+
+    if(event.key==="Enter"){
+
+
+
+        const active =
+            document.activeElement;
+
+
+
+        if(
+            active.id==="startJourney"
+        ){
+
+            startJourney();
+
+        }
+
+
+
+        if(
+            active===DOM.envelope
+        ){
+
+            openEnvelope();
+
+        }
+
+
+
+    }
+
+
+
+    if(event.key.toLowerCase()==="m"){
+
+        toggleMusic();
+
+    }
+
+
+
+});
+
+
 
 /*==============================================================
 SCROLL PROGRESS
 ==============================================================*/
 
+
 function updateProgress(){
 
-    const scrollTop=
 
-        window.scrollY;
+    if(!DOM.progress)
+        return;
 
-    const scrollHeight=
 
-        document.documentElement.scrollHeight-
+
+    const height =
+
+        document.documentElement.scrollHeight -
 
         window.innerHeight;
 
-    const progress=
 
-        scrollHeight<=0
 
-        ?0
+    const progress =
 
-        :(scrollTop/scrollHeight)*100;
+        height <= 0
 
-    progressBar.style.width=
+        ? 0
 
-        progress+"%";
+        :
+
+        (window.scrollY / height) * 100;
+
+
+
+    DOM.progress.style.width =
+
+        `${progress}%`;
+
+
 
 }
 
@@ -613,398 +986,733 @@ window.addEventListener(
     updateProgress,
 
     {
-
         passive:true
-
     }
 
 );
-
 /*==============================================================
-INTRO TRANSITION
+PARTICLE ENGINE
 ==============================================================*/
 
-async function startJourney(){
 
-    if(state.started){
+function random(min,max){
 
-        return;
-
-    }
-
-    state.started=true;
-
-    startButton.style.opacity="0";
-
-    startButton.style.pointerEvents="none";
-
-    await wait(350);
-
-    welcomeScreen.classList.add("hidden");
-
-    envelopeScreen.classList.remove("hidden");
-
-    easeScroll(envelopeScreen);
-
-}
-/*==============================================================
-ENVELOPE INTERACTION
-==============================================================*/
-
-startButton.addEventListener(
-    "click",
-    startJourney,
-    { passive: true }
-);
-
-async function openEnvelope() {
-
-    if (state.envelopeOpened) {
-        return;
-    }
-
-    state.envelopeOpened = true;
-
-    /* Bounce */
-
-    envelope.classList.add("bounce");
-
-    await wait(650);
-
-    envelope.classList.remove("bounce");
-
-    /* Blur Background */
-
-    document.body.classList.add("blur-background");
-
-    blurOverlay.classList.add("active");
-
-    await wait(180);
-
-    /* Open Flap */
-
-    envelope.classList.add("open");
-
-    await wait(850);
-
-    /* Reveal Letter */
-
-    revealLetter();
+    return Math.random() * (max-min) + min;
 
 }
 
-envelope.addEventListener(
-    "click",
-    openEnvelope,
-    { passive: true }
-);
+
+
+function createParticle(){
+
+
+    if(!DOM.particles)
+        return;
+
+
+
+    const particle =
+        document.createElement("span");
+
+
+
+    particle.className =
+        "particle";
+
+
+
+    const size =
+        random(2,6);
+
+
+
+    const duration =
+        random(18,36);
+
+
+
+    const delay =
+        random(-20,0);
+
+
+
+    const position =
+        random(0,100);
+
+
+
+    particle.style.width =
+        `${size}px`;
+
+
+
+    particle.style.height =
+        `${size}px`;
+
+
+
+    particle.style.left =
+        `${position}%`;
+
+
+
+    particle.style.bottom =
+        "-20px";
+
+
+
+    particle.style.animationDuration =
+        `${duration}s`;
+
+
+
+    particle.style.animationDelay =
+        `${delay}s`;
+
+
+
+    particle.style.opacity =
+        random(.08,.35);
+
+
+
+    DOM.particles.appendChild(
+        particle
+    );
+
+
+}
+
+
+
+function createParticles(){
+
+
+    if(!DOM.particles)
+        return;
+
+
+
+    DOM.particles.innerHTML="";
+
+
+
+    for(
+        let i=0;
+        i<SETTINGS.particles;
+        i++
+    ){
+
+        createParticle();
+
+    }
+
+
+}
+
+
+
+
 
 /*==============================================================
-LETTER REVEAL
+MUSIC CONTROLLER
 ==============================================================*/
 
-async function revealLetter() {
 
-    letterScreen.classList.remove("hidden");
+function updateMusicButton(){
 
-    await wait(120);
 
-    easeScroll(letterScreen);
+    if(!DOM.musicButton)
+        return;
 
-    await wait(500);
 
-    letterPaper.classList.add("revealed");
 
-    document.body.classList.add("letter-open");
+    DOM.musicButton.classList.toggle(
 
-    /* Remove Blur */
+        "playing",
 
-    await wait(500);
+        STATE.musicPlaying
 
-    blurOverlay.classList.remove("active");
+    );
 
-    document.body.classList.remove("blur-background");
 
-    /* Auto play music after interaction */
+}
 
-    if (!state.musicPlaying) {
+
+
+async function playMusic(){
+
+
+    if(!DOM.music)
+        return;
+
+
+
+    try{
+
+
+        DOM.music.volume =
+            SETTINGS.musicVolume;
+
+
+
+        await DOM.music.play();
+
+
+
+        STATE.musicPlaying=true;
+
+
+
+        updateMusicButton();
+
+
+    }
+
+
+    catch(error){
+
+
+        console.warn(
+            "Music waiting for interaction"
+        );
+
+
+    }
+
+
+}
+
+
+
+
+
+function pauseMusic(){
+
+
+    if(!DOM.music)
+        return;
+
+
+
+    DOM.music.pause();
+
+
+
+    STATE.musicPlaying=false;
+
+
+
+    updateMusicButton();
+
+
+}
+
+
+
+
+function toggleMusic(){
+
+
+    if(
+        STATE.musicPlaying
+    ){
+
+        pauseMusic();
+
+    }
+
+    else{
+
         playMusic();
-    }
-
-    /* Continue toward gallery */
-
-    await wait(1200);
-
-    galleryScreen.classList.remove("hidden");
-
-}
-
-/*==============================================================
-LETTER ANIMATION HELPERS
-==============================================================*/
-
-function revealElement(element) {
-
-    if (!element) return;
-
-    element.classList.add("show");
-
-}
-
-function hideElement(element) {
-
-    if (!element) return;
-
-    element.classList.remove("show");
-
-}
-
-/*==============================================================
-PHOTO CARD REVEAL
-==============================================================*/
-
-async function revealGallerySequential() {
-
-    for (const card of photoCards) {
-
-        card.classList.add("visible");
-
-        await wait(SETTINGS.galleryDelay);
 
     }
 
-}/*==============================================================
+
+}
+
+
+
+
+
+
+/*==============================================================
+GALLERY CONTROLLER
+==============================================================*/
+
+
+let galleryCards = [];
+
+
+
+function prepareGallery(){
+
+
+    galleryCards =
+        $$(".photo-card");
+
+
+
+}
+
+
+
+
+
+async function revealGallery(){
+
+
+    for(
+        const card of galleryCards
+    ){
+
+
+        card.classList.add(
+            "visible"
+        );
+
+
+
+        await wait(
+            SETTINGS.galleryDelay
+        );
+
+
+    }
+
+
+}
+
+
+
+
+
+
+/*==============================================================
 INTERSECTION OBSERVER
 ==============================================================*/
 
-const observerOptions = {
-    root: null,
-    rootMargin: "0px 0px -10% 0px",
-    threshold: 0.18
-};
 
-const revealObserver = new IntersectionObserver((entries) => {
+const observer =
 
-    entries.forEach((entry) => {
+new IntersectionObserver(
 
-        if (!entry.isIntersecting) return;
+(entries)=>{
 
-        const target = entry.target;
 
-        if (target.classList.contains("photo-card")) {
-            target.classList.add("visible");
+    entries.forEach(
+
+        entry=>{
+
+
+            if(
+                !entry.isIntersecting
+            )
+            return;
+
+
+
+            const element =
+                entry.target;
+
+
+
+            element.classList.add(
+                "show"
+            );
+
+
+
+            observer.unobserve(
+                element
+            );
+
+
         }
 
-        if (target.classList.contains("fade-up")) {
-            target.classList.add("show");
-        }
 
-        revealObserver.unobserve(target);
+    );
 
-    });
 
-}, observerOptions);
+},
 
-/*==============================================================
-REGISTER OBSERVERS
-==============================================================*/
+{
 
-function registerObservers() {
+    threshold:0.15,
 
-    photoCards.forEach((card) => {
-        revealObserver.observe(card);
-    });
-
-    $$(".fade-up").forEach((item) => {
-        revealObserver.observe(item);
-    });
+    rootMargin:
+    "0px 0px -10% 0px"
 
 }
-
-/*==============================================================
-GALLERY FLOW
-==============================================================*/
-
-async function initializeGallery() {
-
-    await wait(600);
-
-    revealGallerySequential();
-
-}
-
-/*==============================================================
-ENDING SECTION
-==============================================================*/
-
-function watchEnding() {
-
-    if (!endingScreen) return;
-
-    revealObserver.observe(endingScreen);
-
-}
-
-/*==============================================================
-KEYBOARD SUPPORT
-==============================================================*/
-
-document.addEventListener("keydown", (event) => {
-
-    switch (event.key) {
-
-        case "Enter":
-
-        case " ":
-
-            if (
-                document.activeElement === startButton &&
-                !state.started
-            ) {
-
-                event.preventDefault();
-                startJourney();
-
-            }
-
-            if (
-                document.activeElement === envelope &&
-                !state.envelopeOpened
-            ) {
-
-                event.preventDefault();
-                openEnvelope();
-
-            }
-
-            break;
-
-        case "m":
-
-        case "M":
-
-            toggleMusic();
-            break;
-
-        default:
-            break;
-    }
-
-});
-
-/*==============================================================
-RESIZE HANDLER
-==============================================================*/
-
-let resizeTimer;
-
-window.addEventListener(
-
-    "resize",
-
-    () => {
-
-        clearTimeout(resizeTimer);
-
-        resizeTimer = setTimeout(() => {
-
-            updateProgress();
-
-        }, 120);
-
-    },
-
-    { passive: true }
 
 );
 
-/*==============================================================
-VISIBILITY API
-==============================================================*/
 
-document.addEventListener("visibilitychange", () => {
 
-    if (document.hidden && state.musicPlaying) {
 
-        bgMusic.pause();
 
-    }
 
-    if (!document.hidden && state.musicPlaying) {
+function observeElements(){
 
-        bgMusic.play().catch(() => {});
 
-    }
+    const elements =
 
-});
-
-/*==============================================================
-INITIALIZATION
-==============================================================*/
-
-function initializeScreens() {
-
-    envelopeScreen.classList.add("hidden");
-    letterScreen.classList.add("hidden");
-    galleryScreen.classList.add("hidden");
-
-}
-
-function initializeMusic() {
-
-    bgMusic.volume = SETTINGS.musicVolume;
-
-    updateMusicUI();
-
-}
-
-function initializeEnvelopeAccessibility() {
-
-    envelope.tabIndex = 0;
-
-    envelope.setAttribute(
-        "role",
-        "button"
+    $$(
+        ".fade-up, .photo-card"
     );
 
-    envelope.setAttribute(
-        "aria-label",
-        "Open Envelope"
+
+
+    elements.forEach(
+
+        element=>{
+
+            observer.observe(
+                element
+            );
+
+        }
+
     );
 
-}
-
-function initialize(){
-
-    ContentRenderer.renderAll();
-
-
-    buildParticles();
-
-    initializeScreens();
-
-    initializeMusic();
-
-    initializeEnvelopeAccessibility();
-
-    registerObservers();
-
-    watchEnding();
-
-    initializeGallery();
-
-    updateProgress();
 
 }
+
+
+
+
+
+
+/*==============================================================
+VISIBILITY CONTROL
+==============================================================*/
+
 
 document.addEventListener(
 
-    "DOMContentLoaded",
+"visibilitychange",
 
-    initialize
+()=>{
+
+
+    if(
+        document.hidden
+        &&
+        STATE.musicPlaying
+    ){
+
+        DOM.music.pause();
+
+
+    }
+
+
+
+    else if(
+
+        !document.hidden
+        &&
+        STATE.musicPlaying
+
+    ){
+
+
+        DOM.music.play()
+        .catch(()=>{});
+
+
+    }
+
+
+
+}
 
 );
 
+
+
+
+
+
 /*==============================================================
-END OF FILE
+RESIZE OPTIMIZATION
 ==============================================================*/
+
+
+let resizeTimer;
+
+
+
+window.addEventListener(
+
+"resize",
+
+()=>{
+
+
+    clearTimeout(
+        resizeTimer
+    );
+
+
+
+    resizeTimer = setTimeout(
+
+        ()=>{
+
+            updateProgress();
+
+        },
+
+        150
+
+    );
+
+
+},
+
+{
+    passive:true
+}
+
+);
+/*==============================================================
+ACCESSIBILITY INITIALIZATION
+==============================================================*/
+
+
+function setupAccessibility(){
+
+
+    if(DOM.envelope){
+
+
+        DOM.envelope.tabIndex = 0;
+
+
+        DOM.envelope.setAttribute(
+            "role",
+            "button"
+        );
+
+
+        DOM.envelope.setAttribute(
+            "aria-label",
+            "Open envelope"
+        );
+
+
+    }
+
+
+}
+
+
+
+
+
+
+/*==============================================================
+SCREEN INITIALIZATION
+==============================================================*/
+
+
+function initializeScreens(){
+
+
+    hide(
+        DOM.envelopeScene
+    );
+
+
+    hide(
+        DOM.letterScene
+    );
+
+
+    hide(
+        DOM.gallery
+    );
+
+
+    hide(
+        DOM.ending
+    );
+
+
+}
+
+
+
+
+
+/*==============================================================
+MUSIC INITIALIZATION
+==============================================================*/
+
+
+function initializeMusic(){
+
+
+    if(!DOM.music)
+        return;
+
+
+
+    DOM.music.volume =
+        SETTINGS.musicVolume;
+
+
+
+    updateMusicButton();
+
+
+}
+
+
+
+
+
+
+/*==============================================================
+RENDER COMPLETE DOM UPDATE
+==============================================================*/
+
+
+function refreshDynamicElements(){
+
+
+    /*
+    Renderer creates elements
+    so we cache them after rendering
+    */
+
+
+    prepareGallery();
+
+
+
+}
+
+
+
+
+
+
+/*==============================================================
+APP START
+==============================================================*/
+
+
+function initializeApp(){
+
+
+
+    /*
+    1. Generate content
+    */
+
+
+    Renderer.renderAll();
+
+
+
+
+    /*
+    2. Refresh generated elements
+    */
+
+
+    refreshDynamicElements();
+
+
+
+
+
+    /*
+    3. Prepare UI
+    */
+
+
+    initializeScreens();
+
+
+
+    initializeMusic();
+
+
+
+    setupAccessibility();
+
+
+
+
+
+    /*
+    4. Background
+    */
+
+
+    createParticles();
+
+
+
+
+
+    /*
+    5. Events
+    */
+
+
+    bindEvents();
+
+
+
+
+
+    /*
+    6. Observer
+    */
+
+
+    observeElements();
+
+
+
+
+
+    /*
+    7. Progress
+    */
+
+
+    updateProgress();
+
+
+
+
+
+    console.log(
+        "A Secret Journey initialized"
+    );
+
+
+}
+
+
+
+
+
+
+/*==============================================================
+DOM READY
+==============================================================*/
+
+
+document.addEventListener(
+
+"DOMContentLoaded",
+
+initializeApp
+
+);

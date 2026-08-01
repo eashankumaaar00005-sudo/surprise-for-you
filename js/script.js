@@ -149,7 +149,16 @@ duration:1,
 onComplete:()=>{
 
 loader.remove();
-    document.body.classList.add("loaded");
+
+
+document.body.style.overflowY="auto";
+
+document.documentElement.style.overflowY="auto";
+
+
+document.body.classList.add("loaded");
+
+
 startIntro();
 
 }

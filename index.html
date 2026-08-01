@@ -1,1 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>A Secret Journey ❤️</title>
+
+<meta
+name="theme-color"
+content="#07080d">
+
+<!-- Google Fonts -->
+
+<link rel="preconnect"
+href="https://fonts.googleapis.com">
+
+<link rel="preconnect"
+href="https://fonts.gstatic.com"
+crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap"
+rel="stylesheet">
+
+<!-- CSS -->
+
+<link rel="stylesheet"
+href="css/style.css">
+
+<!-- GSAP -->
+
+<script defer
+src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+
+<script defer
+src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+
+<script defer
+src="config.js"></script>
+
+<script defer
+src="js/script.js"></script>
+
+</head>
+
+<body>
+
+<!-- =======================================
+LOADER
+======================================= -->
+
+<div id="loader">
+
+<div class="loader-logo">
+
+❤️
+
+</div>
+
+<div class="loader-bar">
+
+<div id="loaderProgress"></div>
+
+</div>
+
+<p>
+
+Preparing your surprise...
+
+</p>
+
+</div>
+
+<!-- =======================================
+BACKGROUND
+======================================= -->
+
+<div class="background">
+
+<div id="stars"></div>
+
+<div class="glow glow-left"></div>
+
+<div class="glow glow-right"></div>
+
+<div id="mouseGlow"></div>
+
+</div>
+
+<!-- =======================================
+MAIN
+======================================= -->
+
+<main id="app">
+
+<!-- HERO -->
+
+<section
+class="hero section">
+
+<div class="glass hero-card">
+
+<div class="badge">
+
+✨ A Special Surprise
+
+</div>
+
+<h1>
+
+A Secret
+
+Journey
+
+</h1>
+
+<p>
+
+Someone created
+something beautiful
+just for you.
+
+Take your time...
+
+Enjoy every moment.
+
+</p>
+
+<div
+class="envelope"
+
+id="envelope">
+
+<div class="shadow"></div>
+
+<div class="envelope-back">
+
+<div class="fold-left"></div>
+
+<div class="fold-right"></div>
+
+<div class="fold-bottom"></div>
+
+</div>
+
+<div class="paper">
+
+<div class="heart">
+
+❤️
+
+</div>
+
+</div>
+
+<div class="flap"></div>
+
+</div>
+
+<button
+
+class="btn"
+
+id="startBtn">
+
+Open The Letter
+
+</button>
+
+</div>
+
+</section>
+
+<!-- LETTER -->
+
+<section
+class="letter section">
+
+<div class="glass letter-card">
+
+<div class="mini-title">
+
+💌 A Message
+
+</div>
+
+<h2>
+
+Before You Continue...
+
+</h2>
+
+<div
+
+id="typewriter"
+
+class="typing">
+
+</div>
+
+<button
+
+class="btn"
+
+id="continueBtn">
+
+Continue
+
+</button>
+
+</div>
+
+</section>
+
+<!-- JOURNEY -->
+
+<section
+
+class="journey section">
+
+<h2>
+
+The Journey
+
+</h2>
+
+<p>
+
+Every stop unlocks
+another beautiful memory.
+
+</p>
+
+<div class="journey-line">
+
+<div class="stop active">
+
+💌
+
+</div>
+
+<div class="road"></div>
+
+<div class="stop">
+
+📸
+
+</div>
+
+<div class="road"></div>
+
+<div class="stop">
+
+✨
+
+</div>
+
+<div class="road"></div>
+
+<div class="stop">
+
+🎁
+
+</div>
+
+</div>
+
+<button
+
+class="btn"
+
+id="journeyBtn">
+
+Start Exploring
+
+</button>
+
+</section>
+
+<!-- GALLERY -->
+
+<section
+
+class="gallery section">
+
+<h2>
+
+Memories
+
+</h2>
+
+<p>
+
+Every picture
+has a story.
+
+</p>
+
+<div
+
+id="galleryGrid"
+
+class="gallery-grid">
+
+<!-- JS will generate photos -->
+
+</div>
+
+</section>
+
+<!-- MESSAGE -->
+
+<section
+
+class="message section">
+
+<div class="glass">
+
+<h2>
+
+One Last Thing...
+
+</h2>
+
+<div
+
+id="finalTyping">
+
+</div>
+
+<button
+
+class="btn"
+
+id="finishBtn">
+
+Final Surprise
+
+</button>
+
+</div>
+
+</section>
+
+<!-- FINAL -->
+
+<section
+
+class="final section">
+
+<div class="glass final-card">
+
+<h2>
+
+❤️
+
+Thank You
+
+</h2>
+
+<p id="finalText">
+
+</p>
+
+<button
+
+class="btn"
+
+id="replayBtn">
+
+Replay Journey
+
+</button>
+
+</div>
+
+</section>
+
+</main>
+
+</body>
+
+</html>

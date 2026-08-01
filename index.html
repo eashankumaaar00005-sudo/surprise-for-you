@@ -68,34 +68,9 @@
 class="screen welcome-screen active"
 id="welcome">
 
-<div class="glass-panel">
-
-<div class="tiny-label">
-A Private Experience
-</div>
-
-<h1 class="hero-title">
-A Secret Journey
-</h1>
-
-<p class="hero-subtitle">
-
-Some moments deserve
-more than words.
-
-This one was made
-only for you.
-
-</p>
-
-<button
-id="startJourney"
-class="primary-btn"
-aria-label="Open My Letter">
-
-<span>Open My Letter</span>
-
-</button>
+<div
+class="glass-panel"
+id="welcomeContent">
 
 </div>
 
@@ -106,7 +81,7 @@ aria-label="Open My Letter">
 <!-- ========================================================= -->
 
 <section
-class="screen envelope-screen"
+class="screen envelope-screen hidden"
 id="envelopeScene">
 
 <div class="scene-wrapper">
@@ -148,10 +123,9 @@ class="envelope-flap">
 </div>
 
 </div>
-
-<div class="instruction">
-
-Tap the envelope
+<div
+class="instruction"
+id="envelopeInstruction">
 
 </div>
 
@@ -164,7 +138,7 @@ Tap the envelope
 <!-- ========================================================= -->
 
 <section
-class="screen letter-screen"
+class="screen letter-screen hidden"
 id="letterScene">
 
 <div class="letter-wrapper">
@@ -173,57 +147,14 @@ id="letterScene">
 class="letter-paper"
 id="letterPaper">
 
-<div class="paper-top-glow"></div>
-
-<div class="paper-content">
-
-<div class="letter-date">
-
-Today
+<div
+class="paper-top-glow">
 
 </div>
 
-<h2>
-
-Dear You,
-
-</h2>
-
-<p>
-
-There are thousands of ordinary moments in life.
-
-Then there are the rare ones...
-
-the kind that quietly become unforgettable.
-
-</p>
-
-<p>
-
-This journey isn't about destinations.
-
-It's about memories,
-laughter,
-unexpected smiles,
-and every little feeling
-that slowly became something beautiful.
-
-</p>
-
-<p>
-
-Keep scrolling.
-
-The best part is still waiting.
-
-</p>
-
-<div class="signature">
-
-With all my heart ❤️
-
-</div>
+<div
+class="paper-content"
+id="letterContent">
 
 </div>
 
@@ -238,166 +169,35 @@ With all my heart ❤️
 <!-- ========================================================= -->
 
 <section
-class="screen gallery-screen"
+class="screen gallery-screen hidden"
 id="gallery">
 
-<div class="section-header">
-
-<div class="tiny-label">
-
-Captured Moments
-
-</div>
-
-<h2>
-
-Pieces of Our Story
-
-</h2>
+<div 
+class="section-header"
+id="galleryHeader">
 
 </div>
 
 <div
-class="gallery-list">
-
-<!-- CARD 1 -->
-
-<figure class="photo-card">
-
-<img
-loading="lazy"
-src="assets/photos/photo1.jpg"
-alt="Memory One">
-
-<figcaption>
-
-Every beginning feels magical.
-
-</figcaption>
-
-</figure>
-
-<!-- CARD 2 -->
-
-<figure class="photo-card">
-
-<img
-loading="lazy"
-src="assets/photos/photo2.jpg"
-alt="Memory Two">
-
-<figcaption>
-
-Smiles become memories.
-
-</figcaption>
-
-</figure>
-
-<!-- CARD 3 -->
-
-<figure class="photo-card">
-
-<img
-loading="lazy"
-src="assets/photos/photo3.jpg"
-alt="Memory Three">
-
-<figcaption>
-
-The little moments matter most.
-
-</figcaption>
-
-</figure>
-
-<!-- CARD 4 -->
-
-<figure class="photo-card">
-
-<img
-loading="lazy"
-src="assets/photos/photo4.jpg"
-alt="Memory Four">
-
-<figcaption>
-
-Every journey feels lighter together.
-
-</figcaption>
-
-</figure>
-
-<!-- CARD 5 -->
-
-<figure class="photo-card">
-
-<img
-loading="lazy"
-src="assets/photos/photo5.jpg"
-alt="Memory Five">
-
-<figcaption>
-
-Some stories deserve forever.
-
-</figcaption>
-
-</figure>
+class="gallery-list"
+id="galleryList">
 
 </div>
 
 </section>
-
 <!-- ========================================================= -->
 <!-- Final Message -->
 <!-- ========================================================= -->
 
 <section
-class="screen ending-screen"
+class="screen ending-screen hidden"
 id="ending">
 
-<div class="glass-panel ending-card">
-
-<div class="tiny-label">
-
-One Last Thing
+<div
+class="glass-panel ending-card"
+id="endingContent">
 
 </div>
-
-<h2>
-
-Thank You
-
-</h2>
-
-<p>
-
-Thank you
-for every smile,
-every conversation,
-every unforgettable memory,
-and every tiny moment
-that quietly became part of my life.
-
-</p>
-
-<p>
-
-No matter where life takes us...
-
-this journey will always remain special.
-
-</p>
-
-<h3>
-
-❤️
-
-</h3>
-
-</div>
-
 </section>
 
 </main>
@@ -411,10 +211,10 @@ id="bgMusic"
 loop
 preload="auto">
 
-<source
-src="assets/music/music.mp3"
-type="audio/mpeg">
-
+<audio
+id="bgMusic"
+loop
+preload="auto">
 </audio>
 
 <!-- Floating Music Button -->
@@ -463,8 +263,6 @@ id="progressBar">
 
 <div
 id="blurOverlay">
-
-</div>
 
 <!-- Configuration -->
 

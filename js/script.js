@@ -321,9 +321,11 @@ opacity:0,
 
 duration:1,
 
-onComplete(){
+onComplete:()=>{
 
 loader.remove();
+
+document.body.classList.add("locked");
 
 startIntro();
 
@@ -519,6 +521,7 @@ startBtn.addEventListener(
 
 
 journeyUnlocked=true;
+    document.body.classList.remove("locked");
 
 
 

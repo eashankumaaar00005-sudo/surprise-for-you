@@ -1,4 +1,19 @@
 /*==================================================
+ DEVICE CHECK
+==================================================*/
+
+
+const isMobile =
+window.innerWidth < 768;
+
+
+
+if(isMobile){
+
+gsap.globalTimeline.timeScale(.85);
+
+}
+/*==================================================
     SURPRISE JOURNEY V3
     FINAL SCRIPT.JS V2 PART 1
 ==================================================*/
@@ -54,29 +69,42 @@ const stars=document.getElementById("stars");
 
 function createStars(){
 
-if(!stars)return;
 
-const count=window.innerWidth<768?50:120;
+const count =
+window.innerWidth < 768 ? 50 : 120;
+
+
 
 for(let i=0;i<count;i++){
 
-const star=document.createElement("span");
+
+const star =
+document.createElement("span");
+
 
 star.className="star";
 
-star.style.left=Math.random()*100+"%";
-star.style.top=Math.random()*100+"%";
-star.style.animationDuration=(5+Math.random()*10)+"s";
-star.style.animationDelay=Math.random()*10+"s";
 
-stars.appendChild(star);
+star.style.left =
+Math.random()*100+"%";
+
+
+star.style.top =
+Math.random()*100+"%";
+
+
+star.style.animationDuration =
+(6 + Math.random()*12)+"s";
+
+
+starsContainer.appendChild(star);
+
+
 
 }
 
+
 }
-
-createStars();
-
 /*==================================================
     MOUSE GLOW
 ==================================================*/
@@ -121,7 +149,7 @@ duration:1,
 onComplete:()=>{
 
 loader.remove();
-
+    document.body.classList.add("loaded");
 startIntro();
 
 }

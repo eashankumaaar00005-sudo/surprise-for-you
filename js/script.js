@@ -1,169 +1,197 @@
 /*==================================================
     SURPRISE JOURNEY V3
-    SCRIPT.JS
+    FINAL SCRIPT.JS
 ==================================================*/
 
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded",()=>{
+
 
 /*==================================================
-    MAGNETIC BUTTON EFFECT
+    GSAP
 ==================================================*/
 
-
-const buttons =
-document.querySelectorAll(".btn");
-
-
-buttons.forEach(btn=>{
-
-
-btn.addEventListener(
-"mousemove",
-(e)=>{
-
-
-const rect =
-btn.getBoundingClientRect();
-
-
-const x =
-e.clientX - rect.left - rect.width/2;
-
-
-const y =
-e.clientY - rect.top - rect.height/2;
-
-
-
-gsap.to(
-btn,
-{
-
-x:x*0.25,
-
-y:y*0.25,
-
-duration:.3,
-
-ease:"power2.out"
-
-}
-
-);
-
-
-});
-
-
-
-btn.addEventListener(
-"mouseleave",
-()=>{
-
-
-gsap.to(
-btn,
-{
-
-x:0,
-
-y:0,
-
-duration:.6,
-
-ease:"elastic.out(1,.3)"
-
-}
-
-);
-
-
-});
-
-
-});
-
+gsap.registerPlugin(ScrollTrigger);
 
 
 
 
 /*==================================================
-    GLASS CARD 3D TILT
+    INITIAL SCROLL LOCK
 ==================================================*/
 
 
-const glassCards =
-document.querySelectorAll(".glass");
+let journeyUnlocked = false;
 
 
-glassCards.forEach(card=>{
+function preventScroll(e){
 
+    if(!journeyUnlocked){
 
-card.addEventListener(
-"mousemove",
-(e)=>{
+        e.preventDefault();
 
-
-const rect =
-card.getBoundingClientRect();
-
-
-const rotateX =
-((e.clientY-rect.top)
-/
-rect.height
--
-.5)
-*
-10;
-
-
-
-const rotateY =
-((e.clientX-rect.left)
-/
-rect.width
--
-.5)
-*
--10;
-
-
-
-gsap.to(
-card,
-{
-
-rotationX:rotateX,
-
-rotationY:rotateY,
-
-transformPerspective:1000,
-
-duration:.4
+    }
 
 }
 
-);
+
+window.addEventListener(
+"wheel",
+preventScroll,
+{
+    passive:false
+});
+
+
+window.addEventListener(
+"touchmove",
+preventScroll,
+{
+    passive:false
+});
+
+
+window.addEventListener(
+"keydown",
+(e)=>{
+
+
+if(
+!journeyUnlocked &&
+[
+"ArrowDown",
+"ArrowUp",
+"Space",
+"PageDown",
+"PageUp"
+]
+.includes(e.code)
+){
+
+e.preventDefault();
+
+}
 
 
 });
 
 
 
-card.addEventListener(
-"mouseleave",
-()=>{
 
+/*==================================================
+    CONFIG APPLY
+==================================================*/
+
+
+if(typeof CONFIG !== "undefined"){
+
+
+document.title =
+CONFIG.title;
+
+
+const title =
+document.querySelector(
+".hero-card h1"
+);
+
+
+if(title){
+
+title.innerHTML =
+CONFIG.title.replace(
+" ",
+"<br>"
+);
+
+}
+
+
+}
+
+
+
+
+
+
+/*==================================================
+    FLOATING STARS
+==================================================*/
+
+
+const stars =
+document.getElementById("stars");
+
+
+function createStars(){
+
+
+if(!stars) return;
+
+
+for(let i=0;i<120;i++){
+
+
+const star =
+document.createElement("span");
+
+
+star.className="star";
+
+
+star.style.left =
+Math.random()*100+"%";
+
+
+star.style.animationDuration =
+(5+Math.random()*10)+"s";
+
+
+star.style.animationDelay =
+Math.random()*10+"s";
+
+
+stars.appendChild(star);
+
+
+}
+
+
+}
+
+
+createStars();
+
+
+
+
+
+
+/*==================================================
+    MOUSE GLOW
+==================================================*/
+
+
+const mouseGlow =
+document.getElementById(
+"mouseGlow"
+);
+
+
+window.addEventListener(
+"mousemove",
+(e)=>{
+
+
+if(mouseGlow){
 
 gsap.to(
-card,
+mouseGlow,
 {
 
-rotationX:0,
+x:e.clientX,
 
-rotationY:0,
+y:e.clientY,
 
 duration:.8,
 
@@ -173,8 +201,7 @@ ease:"power3.out"
 
 );
 
-
-});
+}
 
 
 });
@@ -185,37 +212,35 @@ ease:"power3.out"
 
 
 /*==================================================
-    GOLDEN PARTICLE TRAIL
+    GOLD PARTICLES
 ==================================================*/
 
 
 function createParticle(x,y){
 
 
-const particle =
+const p =
 document.createElement("span");
 
 
-particle.className =
+p.className =
 "gold-particle";
 
 
-particle.style.left =
+p.style.left =
 x+"px";
 
 
-particle.style.top =
+p.style.top =
 y+"px";
 
 
-document.body.appendChild(
-particle
-);
+document.body.appendChild(p);
 
 
 
 gsap.to(
-particle,
+p,
 {
 
 y:-80,
@@ -226,16 +251,15 @@ scale:0,
 
 duration:1,
 
-onComplete:()=>{
+onComplete(){
 
-particle.remove();
+p.remove();
 
 }
 
 }
 
 );
-
 
 
 }
@@ -247,7 +271,7 @@ window.addEventListener(
 (e)=>{
 
 
-if(Math.random()>.85){
+if(Math.random()>.88){
 
 createParticle(
 e.clientX,
@@ -264,19 +288,518 @@ e.clientY
 
 
 
+
 /*==================================================
-    PHOTO 3D HOVER
+    LOADER
 ==================================================*/
 
 
-const photos =
-document.querySelectorAll(
-".photo-card"
+const loader =
+document.getElementById(
+"loader"
+);
+
+
+const progress =
+document.getElementById(
+"loaderProgress"
 );
 
 
 
-photos.forEach(photo=>{
+function startPage(){
+
+
+if(loader){
+
+
+gsap.to(
+loader,
+{
+
+opacity:0,
+
+duration:1,
+
+onComplete(){
+
+loader.remove();
+
+startIntro();
+
+}
+
+}
+
+);
+
+
+}
+else{
+
+
+startIntro();
+
+
+}
+
+
+}
+
+
+
+
+if(progress){
+
+
+let value=0;
+
+
+const timer =
+setInterval(()=>{
+
+
+value += Math.random()*10;
+
+
+progress.style.width =
+value+"%";
+
+
+if(value>=100){
+
+
+clearInterval(timer);
+
+
+progress.style.width="100%";
+
+
+setTimeout(
+startPage,
+700
+);
+
+
+}
+
+
+},120);
+
+
+
+}
+else{
+
+
+startPage();
+
+
+}
+
+
+
+
+
+
+
+
+/*==================================================
+    HERO INTRO
+==================================================*/
+
+
+function startIntro(){
+
+
+const tl =
+gsap.timeline();
+
+
+
+tl.from(
+".hero-card",
+{
+
+opacity:0,
+
+y:80,
+
+duration:1.3,
+
+ease:"power4.out"
+
+}
+)
+
+
+.from(
+".badge",
+{
+
+opacity:0,
+
+scale:.5,
+
+duration:.7
+
+},
+"-=.8"
+)
+
+
+.from(
+".envelope",
+{
+
+opacity:0,
+
+scale:.5,
+
+rotationY:180,
+
+duration:1.4,
+
+ease:"back.out"
+
+},
+"-=.5"
+)
+
+
+.from(
+"#startBtn",
+{
+
+opacity:0,
+
+y:30,
+
+duration:.8
+
+},
+"-=.5"
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+/*==================================================
+    ENVELOPE OPEN
+==================================================*/
+
+
+const envelope =
+document.getElementById(
+"envelope"
+);
+
+
+const startBtn =
+document.getElementById(
+"startBtn"
+);
+
+
+
+if(startBtn && envelope){
+
+
+startBtn.addEventListener(
+"click",
+()=>{
+
+
+journeyUnlocked=true;
+
+
+
+window.removeEventListener(
+"wheel",
+preventScroll
+);
+
+
+window.removeEventListener(
+"touchmove",
+preventScroll
+);
+
+
+
+
+envelope.classList.add(
+"open"
+);
+
+
+
+gsap.to(
+startBtn,
+{
+
+opacity:0,
+
+scale:0,
+
+duration:.5
+
+}
+
+);
+
+
+
+setTimeout(()=>{
+
+
+document
+.querySelector(".letter")
+?.scrollIntoView(
+{
+behavior:"smooth"
+}
+);
+
+
+
+typeLetter();
+
+
+},1200);
+
+
+
+});
+
+
+}
+
+
+
+
+
+
+
+/*==================================================
+    TYPEWRITER
+==================================================*/
+
+
+function typeWriter(
+element,
+text,
+speed=45
+){
+
+
+if(!element)return;
+
+
+element.innerHTML="";
+
+
+let i=0;
+
+
+
+function write(){
+
+
+if(i<text.length){
+
+
+element.innerHTML +=
+text.charAt(i);
+
+
+i++;
+
+
+setTimeout(
+write,
+speed
+);
+
+
+}
+
+
+}
+
+
+
+write();
+
+
+}
+
+
+
+let letterDone=false;
+
+
+
+function typeLetter(){
+
+
+if(letterDone)return;
+
+
+if(typeof CONFIG==="undefined")
+return;
+
+
+letterDone=true;
+
+
+typeWriter(
+document.getElementById(
+"typewriter"
+),
+CONFIG.letter
+);
+
+
+}
+
+
+
+
+
+
+
+
+/*==================================================
+    BUTTON NAVIGATION
+==================================================*/
+
+
+document
+.getElementById(
+"continueBtn"
+)
+?.addEventListener(
+"click",
+()=>{
+
+
+document
+.querySelector(".journey")
+?.scrollIntoView(
+{
+behavior:"smooth"
+}
+);
+
+
+});
+
+
+
+
+document
+.getElementById(
+"journeyBtn"
+)
+?.addEventListener(
+"click",
+()=>{
+
+
+document
+.querySelector(".gallery")
+?.scrollIntoView(
+{
+behavior:"smooth"
+}
+);
+
+
+});
+
+
+
+
+
+
+
+
+/*==================================================
+    GALLERY CREATE
+==================================================*/
+
+
+const gallery =
+document.getElementById(
+"galleryGrid"
+);
+
+
+
+if(
+gallery &&
+typeof CONFIG!=="undefined"
+){
+
+
+CONFIG.photos.forEach(
+(photo,index)=>{
+
+
+const card =
+document.createElement(
+"div"
+);
+
+
+card.className =
+"photo-card reveal";
+
+
+
+card.innerHTML = `
+
+<img src="${photo}"
+alt="Memory ${index+1}"
+loading="lazy">
+
+`;
+
+
+
+gallery.appendChild(card);
+
+
+});
+
+
+}
+
+
+
+
+
+
+
+/*==================================================
+    PHOTO TILT
+==================================================*/
+
+
+document
+.querySelectorAll(
+".photo-card"
+)
+.forEach(photo=>{
 
 
 photo.addEventListener(
@@ -288,32 +811,19 @@ const rect =
 photo.getBoundingClientRect();
 
 
-const rotateX =
-((e.clientY-rect.top)
-/
-rect.height
--.5)
-*
-15;
-
-
-const rotateY =
-((e.clientX-rect.left)
-/
-rect.width
--.5)
-*
--15;
-
-
-
 gsap.to(
 photo,
 {
 
-rotationX:rotateX,
+rotationX:
+((e.clientY-rect.top)
+/rect.height-.5)*15,
 
-rotationY:rotateY,
+
+rotationY:
+((e.clientX-rect.left)
+/rect.width-.5)*-15,
+
 
 transformPerspective:900,
 
@@ -352,718 +862,282 @@ duration:.6
 
 
 });
-    /*==================================================
-        GSAP SETUP
-    ==================================================*/
 
-    gsap.registerPlugin(ScrollTrigger);
 
 
 
-    /*==================================================
-        CONFIG APPLY
-    ==================================================*/
 
-    if (typeof CONFIG !== "undefined") {
 
 
-        document.title = CONFIG.title;
 
+/*==================================================
+    MAGNETIC BUTTON
+==================================================*/
 
-        const heroTitle =
-            document.querySelector(".hero-card h1");
 
+document
+.querySelectorAll(".btn")
+.forEach(btn=>{
 
-        if (heroTitle) {
 
-            heroTitle.innerHTML =
-                CONFIG.title.replace(" ", "<br>");
+btn.addEventListener(
+"mousemove",
+(e)=>{
 
-        }
 
-    }
+const r =
+btn.getBoundingClientRect();
 
 
+gsap.to(
+btn,
+{
 
+x:
+(e.clientX-r.left-r.width/2)*.25,
 
-    /*==================================================
-        FLOATING STARS
-    ==================================================*/
+y:
+(e.clientY-r.top-r.height/2)*.25,
 
+duration:.3
 
-    const starsContainer =
-        document.getElementById("stars");
+}
 
+);
 
-    function createStars() {
 
+});
 
-        if (!starsContainer) return;
 
 
-        for (let i = 0; i < 120; i++) {
+btn.addEventListener(
+"mouseleave",
+()=>{
 
 
-            const star =
-                document.createElement("span");
+gsap.to(
+btn,
+{
 
+x:0,
 
-            star.className = "star";
+y:0,
 
+duration:.5
 
-            star.style.left =
-                Math.random() * 100 + "%";
+}
 
+);
 
-            star.style.animationDuration =
-                (5 + Math.random() * 10) + "s";
 
+});
 
-            star.style.animationDelay =
-                Math.random() * 10 + "s";
 
+});
 
-            star.style.opacity =
-                Math.random();
 
 
-            starsContainer.appendChild(star);
 
-        }
 
-    }
 
 
-    createStars();
+/*==================================================
+    GLASS TILT
+==================================================*/
 
 
+document
+.querySelectorAll(".glass")
+.forEach(card=>{
 
 
+card.addEventListener(
+"mousemove",
+(e)=>{
 
-    /*==================================================
-        MOUSE GLOW
-    ==================================================*/
 
+const r =
+card.getBoundingClientRect();
 
-    const mouseGlow =
-        document.getElementById("mouseGlow");
 
+gsap.to(
+card,
+{
 
-    if (mouseGlow) {
+rotationX:
+((e.clientY-r.top)
+/r.height-.5)*10,
 
 
-        window.addEventListener(
-            "mousemove",
-            (e) => {
+rotationY:
+((e.clientX-r.left)
+/r.width-.5)*-10,
 
 
-                gsap.to(
-                    mouseGlow,
-                    {
+duration:.3,
 
-                        x: e.clientX,
+transformPerspective:1000
 
-                        y: e.clientY,
+}
 
-                        duration: 0.8,
+);
 
-                        ease: "power3.out"
 
-                    }
-                );
+});
 
 
-            }
-        );
+card.addEventListener(
+"mouseleave",
+()=>{
 
-    }
 
+gsap.to(
+card,
+{
 
+rotationX:0,
 
+rotationY:0,
 
+duration:.6
 
-    /*==================================================
-        LOADER
-    ==================================================*/
+}
 
+);
 
-    const loader =
-        document.getElementById("loader");
 
+});
 
-    const progress =
-        document.getElementById("loaderProgress");
 
+});
 
 
-    function removeLoader() {
 
 
-        if (!loader) {
 
-            startIntro();
 
-            return;
 
-        }
+/*==================================================
+    SCROLL ANIMATION
+==================================================*/
 
 
-        gsap.to(
-            loader,
-            {
+gsap.utils.toArray(
+".reveal"
+)
+.forEach(el=>{
 
-                opacity: 0,
 
-                duration: 1,
+gsap.to(
+el,
+{
 
-                onComplete: () => {
+opacity:1,
 
-                    loader.remove();
+y:0,
 
-                    startIntro();
+duration:1,
 
-                }
+scrollTrigger:{
 
-            }
-        );
+trigger:el,
 
+start:"top 85%"
 
-    }
+}
 
+}
 
+);
 
-    if (progress) {
 
+});
 
-        let value = 0;
 
 
-        const loaderTimer =
-            setInterval(() => {
 
 
-                value += Math.random() * 8;
 
 
-                if (value >= 100) {
+/*==================================================
+    FINAL MESSAGE
+==================================================*/
 
 
-                    value = 100;
+let finalDone=false;
 
 
-                    clearInterval(loaderTimer);
 
+document
+.getElementById(
+"finishBtn"
+)
+?.addEventListener(
+"click",
+()=>{
 
-                    progress.style.width =
-                        "100%";
 
+if(finalDone)return;
 
-                    setTimeout(
-                        removeLoader,
-                        700
-                    );
 
+finalDone=true;
 
-                }
 
 
-                progress.style.width =
-                    value + "%";
+document
+.querySelector(".final")
+?.scrollIntoView(
+{
+behavior:"smooth"
+}
+);
 
 
-            }, 150);
 
+setTimeout(()=>{
 
-    }
-    else {
 
+typeWriter(
+document.getElementById(
+"finalText"
+),
+CONFIG.finalMessage,
+60
+);
 
-        startIntro();
 
-    }
+},900);
 
 
 
+});
 
 
-    /*==================================================
-        HERO INTRO
-    ==================================================*/
 
 
-    function startIntro() {
 
 
-        const timeline =
-            gsap.timeline();
 
 
+/*==================================================
+    REPLAY
+==================================================*/
 
-        timeline
-            .from(
-                ".hero-card",
-                {
 
-                    opacity: 0,
+document
+.getElementById(
+"replayBtn"
+)
+?.addEventListener(
+"click",
+()=>{
 
-                    y: 80,
 
-                    duration: 1.4,
+location.reload();
 
-                    ease: "power4.out"
 
-                }
-            )
+});
 
 
-            .from(
-                ".badge",
-                {
 
-                    opacity: 0,
-
-                    scale: .5,
-
-                    duration: .8
-
-                },
-                "-=.8"
-            )
-
-
-            .from(
-                ".envelope",
-                {
-
-                    opacity: 0,
-
-                    scale: .5,
-
-                    rotationY: 180,
-
-                    duration: 1.5,
-
-                    ease: "back.out"
-
-                },
-                "-=.5"
-            )
-
-
-            .from(
-                "#startBtn",
-                {
-
-                    opacity: 0,
-
-                    y: 30,
-
-                    duration: 1
-
-                },
-                "-=.5"
-            );
-
-
-    }
-
-
-
-
-
-    /*==================================================
-        ENVELOPE OPEN
-    ==================================================*/
-
-
-    const envelope =
-        document.getElementById("envelope");
-
-
-    const startBtn =
-        document.getElementById("startBtn");
-
-
-
-    if (startBtn && envelope) {
-
-
-        startBtn.addEventListener(
-            "click",
-            () => {
-
-
-                envelope.classList.add("open");
-
-
-                gsap.to(
-                    startBtn,
-                    {
-
-                        opacity: 0,
-
-                        scale: 0,
-
-                        duration: .5
-
-                    }
-                );
-
-
-
-                setTimeout(() => {
-
-
-                    document
-                        .querySelector(".letter")
-                        ?.scrollIntoView(
-                            {
-                                behavior: "smooth"
-                            }
-                        );
-
-
-                    typeLetter();
-
-
-                }, 1200);
-
-
-
-            }
-        );
-
-
-    }
-
-
-
-
-
-    /*==================================================
-        TYPEWRITER
-    ==================================================*/
-
-
-    function typeWriter(
-        element,
-        text,
-        speed = 45
-    ) {
-
-
-        if (!element) return;
-
-
-        element.innerHTML = "";
-
-
-        let index = 0;
-
-
-
-        function write() {
-
-
-            if (index < text.length) {
-
-
-                element.innerHTML +=
-                    text.charAt(index);
-
-
-                index++;
-
-
-                setTimeout(
-                    write,
-                    speed
-                );
-
-
-            }
-
-
-        }
-
-
-        write();
-
-
-    }
-
-
-
-
-    let letterStarted = false;
-
-
-
-    function typeLetter() {
-
-
-        if (letterStarted) return;
-
-
-        if (typeof CONFIG === "undefined")
-            return;
-
-
-        letterStarted = true;
-
-
-        typeWriter(
-
-            document.getElementById("typewriter"),
-
-            CONFIG.letter
-
-        );
-
-
-    }
-
-
-
-
-
-    /*==================================================
-        BUTTON NAVIGATION
-    ==================================================*/
-
-
-    document
-        .getElementById("continueBtn")
-        ?.addEventListener(
-            "click",
-            () => {
-
-
-                document
-                    .querySelector(".journey")
-                    ?.scrollIntoView(
-                        {
-                            behavior:"smooth"
-                        }
-                    );
-
-
-            }
-        );
-
-
-
-
-    document
-        .getElementById("journeyBtn")
-        ?.addEventListener(
-            "click",
-            () => {
-
-
-                document
-                    .querySelector(".gallery")
-                    ?.scrollIntoView(
-                        {
-                            behavior:"smooth"
-                        }
-                    );
-
-
-            }
-        );
-
-
-
-
-
-
-    /*==================================================
-        GALLERY
-    ==================================================*/
-
-
-    const gallery =
-        document.getElementById("galleryGrid");
-
-
-
-    if (
-        gallery &&
-        typeof CONFIG !== "undefined" &&
-        CONFIG.photos
-    ) {
-
-
-        CONFIG.photos.forEach(
-            (photo, index) => {
-
-
-                const card =
-                    document.createElement("div");
-
-
-                card.className =
-                    "photo-card reveal";
-
-
-
-                card.innerHTML = `
-
-                    <img 
-                    src="${photo}" 
-                    alt="Memory ${index+1}"
-                    loading="lazy">
-
-                `;
-
-
-
-                gallery.appendChild(card);
-
-
-            }
-        );
-
-
-    }
-
-
-
-
-
-
-
-    /*==================================================
-        SCROLL ANIMATIONS
-    ==================================================*/
-
-
-    gsap.utils.toArray(".reveal")
-        .forEach(item => {
-
-
-            gsap.to(
-                item,
-                {
-
-                    opacity:1,
-
-                    y:0,
-
-                    duration:1,
-
-
-                    scrollTrigger:{
-
-                        trigger:item,
-
-                        start:"top 85%"
-
-                    }
-
-                }
-            );
-
-
-        });
-
-
-
-
-
-    gsap.utils.toArray(".section")
-        .forEach(section => {
-
-
-            gsap.from(
-                section,
-                {
-
-                    opacity:0,
-
-                    y:40,
-
-                    duration:1,
-
-
-                    scrollTrigger:{
-
-                        trigger:section,
-
-                        start:"top 90%"
-
-                    }
-
-                }
-            );
-
-
-        });
-
-    /*==================================================
-        FINAL MESSAGE
-    ==================================================*/
-
-    let finalStarted = false;
-    document
-        .getElementById("finishBtn")
-        ?.addEventListener(
-            "click",
-            () => {
-                if(finalStarted)
-                    return;
-                finalStarted = true;
-                document
-                    .querySelector(".final")
-                    ?.scrollIntoView(
-                        {
-                            behavior:"smooth"
-                        }
-                    );
-                setTimeout(
-                    () => {
-
-
-                        if(typeof CONFIG !== "undefined"){
-
-
-                            typeWriter(
-
-                                document.getElementById(
-                                    "finalText"
-                                ),
-                                CONFIG.finalMessage,
-                                60
-                            );
-                        }
-                    },
-                    900
-                );
-            }
-        );
-
-    /*==================================================
-        REPLAY
-    ==================================================*/
-
-    document
-        .getElementById("replayBtn")
-        ?.addEventListener(
-            "click",
-            () => {
-                window.scrollTo(
-                    {
-                        top:0,
-                        behavior:"smooth"
-                    }
-                );
-                setTimeout(
-                    () => {
-                        location.reload();
-                    },
-                    1200
-                );
-            }
-        );
 });

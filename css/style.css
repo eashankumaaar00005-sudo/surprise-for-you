@@ -622,12 +622,6 @@ box-shadow:
 0 35px 70px rgba(0,0,0,.5);
 
 }
-
-body.locked{
-
-overflow:hidden;
-
-}
 /* side folds */
 
 .fold-left,
@@ -1519,4 +1513,11 @@ transform-style:preserve-3d;
 
 backface-visibility:hidden;
 
+}
+/*==================================================
+    SCROLL LOCK
+==================================================*/
+
+body.locked{
+    overflow:hidden;
 }

@@ -1,503 +1,196 @@
-/* =====================================================
-   A Secret Journey
-   Mobile First CSS
-   Part 1
-===================================================== */
+/*==================================================
+A SECRET JOURNEY
+Version 2.0
+Mobile First
+==================================================*/
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
 
-/* =====================================================
-   RESET
-===================================================== */
+:root{
+--bg:#050816;
+--bg2:#0d1426;
+--card:#131d35;
+--primary:#ff9d2f;
+--primary2:#ffbc63;
+--white:#ffffff;
+--text:#c9d2e3;
+--shadow:0 30px 60px rgba(0,0,0,.35);
+--radius:28px;
+--transition:.35s cubic-bezier(.22,1,.36,1);
+}
 
-*,
-*::before,
-*::after{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+-webkit-tap-highlight-color:transparent;
 }
 
 html{
-    font-size:16px;
-    scroll-behavior:smooth;
-    -webkit-tap-highlight-color:transparent;
+font-size:16px;
+scroll-behavior:smooth;
 }
 
 body{
-    font-family:'Poppins',sans-serif;
-    background:#0a1020;
-    color:#ffffff;
-    overflow:hidden;
-    min-height:100vh;
-    min-height:100dvh;
+font-family:"Poppins",sans-serif;
+background:var(--bg);
+color:var(--white);
+overflow:hidden;
+min-height:100vh;
+min-height:100dvh;
 }
 
-/* =====================================================
-   VARIABLES
-===================================================== */
-
-:root{
-
-    --bg:#09111d;
-
-    --bg-light:#111d33;
-
-    --primary:#ff9f43;
-
-    --primary-dark:#f58b17;
-
-    --white:#ffffff;
-
-    --text:#d5d9e4;
-
-    --radius:22px;
-
-    --transition:.35s;
-
-    --shadow:
-        0 25px 60px rgba(0,0,0,.28);
-
+button,
+input{
+font-family:inherit;
 }
 
-/* =====================================================
-   APP
-===================================================== */
+button{
+border:none;
+outline:none;
+cursor:pointer;
+}
+
+img{
+display:block;
+max-width:100%;
+user-select:none;
+pointer-events:none;
+}
 
 .app{
-
-    width:100%;
-
-    min-height:100vh;
-
-    min-height:100dvh;
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    padding:24px;
-
-    position:relative;
-
-    overflow:hidden;
-
-}
-
-/* =====================================================
-   PREMIUM BACKGROUND
-===================================================== */
-
-.app::before{
-
-    content:"";
-
-    position:absolute;
-
-    inset:0;
-
-    background:
-
-    radial-gradient(circle at top,#1b315b 0%,transparent 40%),
-
-    radial-gradient(circle at bottom,#152744 0%,transparent 45%),
-
-    linear-gradient(
-        180deg,
-        #09111d,
-        #08101b,
-        #060b14
-    );
-
-    z-index:-3;
-
-}
-
-/* Glow */
-
-.app::after{
-
-    content:"";
-
-    position:absolute;
-
-    width:300px;
-
-    height:300px;
-
-    background:#ff9f43;
-
-    border-radius:50%;
-
-    opacity:.08;
-
-    filter:blur(110px);
-
-    top:-90px;
-
-    left:-70px;
-
-    animation:floatGlow 8s ease-in-out infinite;
-
-    z-index:-2;
-
-}
-
-/* =====================================================
-   CONTENT
-===================================================== */
-
-.welcome-content{
-
-    width:100%;
-
-    max-width:360px;
-
-    text-align:center;
-
-    display:flex;
-
-    flex-direction:column;
-
-    align-items:center;
-
-}
-
-/* =====================================================
-   ICON
-===================================================== */
-
-.welcome-icon{
-
-    font-size:54px;
-
-    margin-bottom:18px;
-
-    animation:iconFloat 4s ease-in-out infinite;
-
-}
-
-/* =====================================================
-   TITLE
-===================================================== */
-
-h1{
-
-    font-size:2rem;
-
-    font-weight:700;
-
-    line-height:1.2;
-
-    letter-spacing:.3px;
-
-    margin-bottom:16px;
-
-}
-
-/* =====================================================
-   SUBTITLE
-===================================================== */
-
-p{
-
-    color:var(--text);
-
-    font-size:.96rem;
-
-    line-height:1.8;
-
-    margin-bottom:40px;
-
-}
-
-/* =====================================================
-   BUTTON
-===================================================== */
-
-.primary-btn{
-
-    width:100%;
-
-    height:58px;
-
-    border:none;
-
-    border-radius:18px;
-
-    background:linear-gradient(
-        135deg,
-        #ffb458,
-        #ff9324
-    );
-
-    color:#fff;
-
-    font-size:1rem;
-
-    font-weight:600;
-
-    cursor:pointer;
-
-    transition:var(--transition);
-
-    box-shadow:
-        0 16px 40px rgba(255,159,67,.35);
-
-}
-
-.primary-btn:hover{
-
-    transform:translateY(-2px);
-
-}
-
-.primary-btn:active{
-
-    transform:scale(.97);
-
-}
-
-.primary-btn:disabled{
-
-    opacity:.65;
-
-    pointer-events:none;
-
-}
-
-/* =====================================================
-   ANIMATIONS
-===================================================== */
-
-@keyframes floatGlow{
-
-    0%{
-
-        transform:
-        translateY(0px);
-
-    }
-
-    50%{
-
-        transform:
-        translateY(35px);
-
-    }
-
-    100%{
-
-        transform:
-        translateY(0px);
-
-    }
-
-}
-
-@keyframes iconFloat{
-
-    0%{
-
-        transform:
-        translateY(0);
-
-    }
-
-    50%{
-
-        transform:
-        translateY(-8px);
-
-    }
-
-    100%{
-
-        transform:
-        translateY(0);
-
-    }
-
-}
-
-/* =====================================================
-   MOBILE
-===================================================== */
-
-@media (max-width:390px){
-
-    h1{
-
-        font-size:1.75rem;
-
-    }
-
-    p{
-
-        font-size:.92rem;
-
-    }
-
-}
-/*==============================
-ENVELOPE
-==============================*/
-
-.envelope-wrapper{
-display:flex;
-justify-content:center;
-align-items:center;
-margin:20px 0 40px;
-perspective:1200px;
-}
-
-.envelope{
 position:relative;
-width:220px;
-height:145px;
-transform-style:preserve-3d;
-animation:envelopeFloat 4s ease-in-out infinite;
-filter:drop-shadow(0 20px 35px rgba(0,0,0,.35));
-}
-
-.back{
-position:absolute;
-inset:0;
-background:linear-gradient(180deg,#ffbe63,#f39a2b);
-border-radius:12px;
-z-index:1;
-}
-
-.letter{
-position:absolute;
-left:50%;
-bottom:8px;
-transform:translateX(-50%);
-width:170px;
-height:115px;
-z-index:2;
-transition:.8s ease;
-}
-
-.letter-paper{
 width:100%;
-height:100%;
-background:#fffdf8;
-border-radius:10px;
+min-height:100vh;
+min-height:100dvh;
 display:flex;
 justify-content:center;
 align-items:center;
-font-size:34px;
-color:#ff5a7a;
-box-shadow:0 10px 25px rgba(0,0,0,.18);
-position:relative;
+padding:28px;
 overflow:hidden;
 }
 
-.letter-paper::before{
-content:"";
-position:absolute;
-top:0;
-left:0;
+.container{
 width:100%;
-height:10px;
-background:linear-gradient(90deg,#ffe3a5,#fff5da,#ffe3a5);
-opacity:.9;
+max-width:390px;
+margin:auto;
+position:relative;
+z-index:5;
 }
 
-.bottom-fold{
-position:absolute;
-bottom:0;
-left:0;
+.hero{
+display:flex;
+flex-direction:column;
+align-items:center;
+text-align:center;
+}
+
+.hero-badge{
+display:inline-flex;
+align-items:center;
+justify-content:center;
+padding:10px 18px;
+border-radius:999px;
+background:rgba(255,255,255,.08);
+backdrop-filter:blur(20px);
+font-size:.82rem;
+font-weight:600;
+letter-spacing:.5px;
+margin-bottom:26px;
+border:1px solid rgba(255,255,255,.08);
+}
+
+.hero h1{
+font-size:2.55rem;
+font-weight:700;
+line-height:1.08;
+letter-spacing:-1px;
+margin-bottom:18px;
+}
+
+.hero p{
+font-size:1rem;
+line-height:1.75;
+color:var(--text);
+max-width:320px;
+margin-bottom:42px;
+}
+
+.primary-btn{
 width:100%;
-height:100%;
-background:linear-gradient(180deg,#ffbb5d,#f59828);
-clip-path:polygon(0 100%,50% 42%,100% 100%);
-z-index:3;
+height:60px;
+border-radius:18px;
+font-size:1rem;
+font-weight:600;
+background:linear-gradient(135deg,var(--primary2),var(--primary));
+color:#fff;
+box-shadow:0 20px 45px rgba(255,157,47,.35);
+transition:var(--transition);
 }
 
-.left-fold{
+.primary-btn:active{
+transform:scale(.97);
+}
+
+.bg-gradient{
 position:absolute;
-left:0;
-top:0;
-width:50%;
-height:100%;
-background:#f7a741;
-clip-path:polygon(0 0,100% 50%,0 100%);
-z-index:4;
-}
-
-.right-fold{
-position:absolute;
-right:0;
-top:0;
-width:50%;
-height:100%;
-background:#ee9830;
-clip-path:polygon(100% 0,0 50%,100% 100%);
-z-index:4;
-}
-
-.top-flap{
-position:absolute;
-top:0;
-left:0;
-width:100%;
-height:82px;
-background:linear-gradient(180deg,#ffd089,#ffb95b);
-clip-path:polygon(0 0,50% 100%,100% 0);
-transform-origin:top;
-z-index:6;
-transition:1s cubic-bezier(.22,1,.36,1);
-backface-visibility:hidden;
-}
-
-.envelope::before{
-content:"";
-position:absolute;
-left:50%;
-bottom:-16px;
-transform:translateX(-50%);
-width:170px;
-height:26px;
-background:rgba(0,0,0,.22);
-filter:blur(18px);
-border-radius:50%;
-z-index:-1;
-}
-
-@keyframes envelopeFloat{
-0%{transform:translateY(0);}
-50%{transform:translateY(-10px);}
-100%{transform:translateY(0);}
-}
-
-/*==============================
-OPEN STATE
-==============================*/
-
-.envelope.open .top-flap{
-transform:rotateX(180deg);
+inset:0;
+background:
+radial-gradient(circle at top,#213d74 0%,transparent 35%),
+radial-gradient(circle at bottom,#1a2f57 0%,transparent 40%),
+linear-gradient(180deg,#09111d,#050816);
 z-index:0;
 }
 
-.envelope.open .letter{
-transform:translateX(-50%) translateY(-90px);
+.bg-glow{
+position:absolute;
+border-radius:50%;
+filter:blur(110px);
+opacity:.12;
+animation:glowFloat 8s ease-in-out infinite;
 }
 
-/*==============================
-MOBILE
-==============================*/
+.glow-1{
+width:260px;
+height:260px;
+background:#ff9d2f;
+top:-80px;
+left:-60px;
+}
+
+.glow-2{
+width:220px;
+height:220px;
+background:#5e86ff;
+bottom:-80px;
+right:-70px;
+animation-delay:2s;
+}
+
+.screen{
+width:100%;
+position:relative;
+z-index:2;
+}
+
+@keyframes glowFloat{
+0%{transform:translateY(0);}
+50%{transform:translateY(30px);}
+100%{transform:translateY(0);}
+}
 
 @media(max-width:390px){
-.envelope{
-width:190px;
-height:125px;
+
+.hero h1{
+font-size:2.15rem;
 }
-.letter{
-width:145px;
-height:100px;
+
+.hero p{
+font-size:.94rem;
 }
+
+.primary-btn{
+height:56px;
+}
+
 }

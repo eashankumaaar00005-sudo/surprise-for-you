@@ -1645,3 +1645,35 @@ transform:scale(1);
 }
 
 }
+.final-card{
+
+animation:
+
+finalGlow 5s ease-in-out infinite;
+
+}
+
+
+
+@keyframes finalGlow{
+
+
+0%,100%{
+
+box-shadow:
+
+0 30px 70px rgba(255,200,80,.15);
+
+}
+
+
+50%{
+
+box-shadow:
+
+0 30px 100px rgba(255,200,80,.45);
+
+}
+
+
+}

@@ -1,343 +1,715 @@
-/* ==========================================================================
-   A SECRET JOURNEY — SCRIPT
-   --------------------------------------------------------------------------
-   Vanilla JS state machine driving five screens:
-   welcome -> envelope -> letter -> gallery -> final
-   Reads all copy/content from CONFIG (config.js) so nothing here needs
-   to change when the content does.
-   ========================================================================== */
+/*==============================================================
+A Secret Journey
+Premium Interactive Experience
+script.js
+Part 3.1
+==============================================================*/
 
-(() => {
-  "use strict";
+"use strict";
 
-  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+/*==============================================================
+DOM CACHE
+==============================================================*/
 
-  /* -----------------------------------------------------------------
-     0. SMALL HELPERS
-     -------------------------------------------------------------- */
+const $ = (selector, scope = document) => scope.querySelector(selector);
 
-  /** Resolve a dotted path like "welcome.heading" against CONFIG. */
-  function resolvePath(path) {
-    return path.split(".").reduce((node, key) => (node && node[key] !== undefined ? node[key] : ""), CONFIG);
-  }
+const $$ = (selector, scope = document) =>
+    [...scope.querySelectorAll(selector)];
 
-  /** Fill every [data-fill] element in the document with its CONFIG value. */
-  function fillContent() {
-    document.querySelectorAll("[data-fill]").forEach((el) => {
-      const value = resolvePath(el.getAttribute("data-fill"));
-      if (value !== "" && value !== undefined) el.textContent = value;
-    });
-  }
+/*==============================================================
+ELEMENTS
+==============================================================*/
 
-  /* -----------------------------------------------------------------
-     1. SCREEN STATE MACHINE
-     -------------------------------------------------------------- */
+const app = $("#app");
 
-  const screens = Array.from(document.querySelectorAll(".screen"));
-  const screenByName = Object.fromEntries(screens.map((el) => [el.dataset.screen, el]));
-  let currentScreen = "welcome";
+const startButton = $("#startJourney");
 
-  /**
-   * Cross-fades from the current screen to `name`.
-   * Both screens transition on the same class toggle, so the outgoing
-   * screen fades/settles down while the incoming one rises/fades in —
-   * a single simultaneous motion rather than two separate steps.
-   */
-  function goToScreen(name) {
-    const next = screenByName[name];
-    if (!next || name === currentScreen) return;
+const welcomeScreen = $("#welcome");
 
-    screenByName[currentScreen]?.classList.remove("is-active");
-    next.classList.add("is-active");
-    currentScreen = name;
+const envelopeScreen = $("#envelopeScene");
 
-    onScreenEnter(name);
-  }
+const letterScreen = $("#letterScene");
 
-  function onScreenEnter(name) {
-    if (name === "gallery") observeGalleryCards();
-    if (name === "final") revealMusicToggle();
-  }
+const galleryScreen = $("#gallery");
 
-  /* -----------------------------------------------------------------
-     2. WELCOME -> ENVELOPE
-     -------------------------------------------------------------- */
+const endingScreen = $("#ending");
 
-  const openLetterBtn = document.getElementById("btn-open-letter");
-  openLetterBtn?.addEventListener("click", () => goToScreen("envelope"));
+const envelope = $("#envelope");
 
-  /* -----------------------------------------------------------------
-     3. ENVELOPE OPENING SEQUENCE
-     -------------------------------------------------------------- */
+const letterPaper = $("#letterPaper");
 
-  const envelope = document.getElementById("envelope");
-  const envelopeHint = document.getElementById("envelope-hint");
-  let envelopeOpened = false;
+const blurOverlay = $("#blurOverlay");
 
-  envelope?.addEventListener("click", () => {
-    if (envelopeOpened) return;
-    envelopeOpened = true;
+const progressBar = $("#progressBar");
 
-    envelope.classList.add("is-opening");
-    if (envelopeHint) envelopeHint.style.opacity = "0";
+const particlesContainer = $("#particles");
 
-    // Let the flap-open + letter-peek animation play out before
-    // handing off to the full letter screen. Timing is halved when
-    // the user prefers reduced motion.
-    const holdTime = prefersReducedMotion ? 250 : 950;
-    window.setTimeout(() => goToScreen("letter"), holdTime);
-  });
+const musicButton = $("#musicButton");
 
-  /* -----------------------------------------------------------------
-     4. LETTER CONTENT + CONTINUE
-     -------------------------------------------------------------- */
+const bgMusic = $("#bgMusic");
 
-  function renderLetter() {
-    const container = document.getElementById("letter-body");
-    if (!container) return;
-    container.innerHTML = "";
-    (CONFIG.letter.paragraphs || []).forEach((text) => {
-      const p = document.createElement("p");
-      p.textContent = text;
-      container.appendChild(p);
-    });
-  }
+const photoCards = $$(".photo-card");
 
-  document.getElementById("btn-to-gallery")?.addEventListener("click", () => goToScreen("gallery"));
+/*==============================================================
+CONFIG
+==============================================================*/
 
-  /* -----------------------------------------------------------------
-     5. GALLERY: RENDER CARDS + SCROLL REVEAL
-     -------------------------------------------------------------- */
+const SETTINGS = window.APP_CONFIG || {
 
-  let galleryRendered = false;
-  let galleryObserver = null;
+    particles: 26,
 
-  function renderGallery() {
-    const track = document.getElementById("gallery-track");
-    if (!track) return;
-    track.innerHTML = "";
+    musicVolume: .45,
 
-    (CONFIG.gallery.photos || []).forEach((photo, index) => {
-      const card = document.createElement("article");
-      card.className = "gallery-card";
+    galleryDelay: 180
 
-      const frame = document.createElement("div");
-      frame.className = "gallery-card__frame";
+};
 
-      const img = document.createElement("img");
-      img.loading = "lazy";
-      img.decoding = "async";
-      img.alt = photo.caption || `Photo ${index + 1}`;
-      img.addEventListener("load", () => img.classList.add("is-loaded"));
-      img.addEventListener("error", () => frame.classList.add("has-error"));
-      img.src = photo.src;
+/*==============================================================
+STATE
+==============================================================*/
 
-      const fallback = document.createElement("div");
-      fallback.className = "gallery-card__fallback";
-      fallback.textContent = "❤";
-      fallback.setAttribute("aria-hidden", "true");
+const state = {
 
-      frame.appendChild(img);
-      frame.appendChild(fallback);
-      card.appendChild(frame);
+    started:false,
 
-      if (photo.caption) {
-        const caption = document.createElement("p");
-        caption.className = "gallery-card__caption";
-        caption.textContent = photo.caption;
-        card.appendChild(caption);
-      }
+    envelopeOpened:false,
 
-      track.appendChild(card);
+    musicPlaying:false
+
+};
+
+/*==============================================================
+HELPERS
+==============================================================*/
+
+function wait(ms){
+
+    return new Promise(resolve=>setTimeout(resolve,ms));
+
+}
+
+
+
+function show(el){
+
+    el.classList.remove("hidden");
+
+}
+
+
+
+function hide(el){
+
+    el.classList.add("hidden");
+
+}
+
+
+
+function easeScroll(target){
+
+    target.scrollIntoView({
+
+        behavior:"smooth",
+
+        block:"start"
+
     });
 
-    galleryRendered = true;
-  }
+}
 
-  function observeGalleryCards() {
-    if (!galleryRendered) renderGallery();
 
-    const scrollEl = document.getElementById("gallery-scroll");
-    const cards = document.querySelectorAll(".gallery-card");
 
-    if (!("IntersectionObserver" in window)) {
-      cards.forEach((c) => c.classList.add("in-view"));
-      return;
+/*==============================================================
+PARTICLE SYSTEM
+==============================================================*/
+
+function random(min,max){
+
+    return Math.random()*(max-min)+min;
+
+}
+
+
+
+function createParticle(){
+
+    const particle=document.createElement("span");
+
+    particle.className="particle";
+
+
+
+    const size=random(2,6);
+
+    const duration=random(16,34);
+
+    const delay=random(-25,0);
+
+    const left=random(0,100);
+
+
+
+    particle.style.width=`${size}px`;
+
+    particle.style.height=`${size}px`;
+
+    particle.style.left=`${left}%`;
+
+    particle.style.bottom="-20px";
+
+    particle.style.animationDuration=`${duration}s`;
+
+    particle.style.animationDelay=`${delay}s`;
+
+    particle.style.opacity=random(.08,.35);
+
+
+
+    particlesContainer.appendChild(particle);
+
+}
+
+
+
+function buildParticles(){
+
+    particlesContainer.innerHTML="";
+
+
+
+    for(
+
+        let i=0;
+
+        i<SETTINGS.particles;
+
+        i++
+
+    ){
+
+        createParticle();
+
     }
 
-    if (galleryObserver) galleryObserver.disconnect();
-    galleryObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("in-view");
-            galleryObserver.unobserve(entry.target);
-          }
-        });
-      },
-      { root: scrollEl, threshold: 0.2, rootMargin: "0px 0px -8% 0px" }
+}
+
+
+
+/*==============================================================
+BACKGROUND MUSIC
+==============================================================*/
+
+function updateMusicUI(){
+
+    musicButton.classList.toggle(
+
+        "playing",
+
+        state.musicPlaying
+
     );
 
-    cards.forEach((c) => galleryObserver.observe(c));
-  }
+}
 
-  document.getElementById("btn-to-final")?.addEventListener("click", () => goToScreen("final"));
 
-  /* -----------------------------------------------------------------
-     6. FINAL SCREEN: REPLAY
-     -------------------------------------------------------------- */
 
-  document.getElementById("btn-replay")?.addEventListener("click", () => {
-    // Reset the envelope so the journey can be experienced again.
-    envelopeOpened = false;
-    envelope?.classList.remove("is-opening");
-    if (envelopeHint) envelopeHint.style.opacity = "";
+async function playMusic(){
 
-    const galleryScroll = document.getElementById("gallery-scroll");
-    if (galleryScroll) galleryScroll.scrollTo({ top: 0, behavior: "auto" });
+    try{
 
-    goToScreen("welcome");
-  });
+        bgMusic.volume=SETTINGS.musicVolume;
 
-  /* -----------------------------------------------------------------
-     7. MUSIC CONTROL
-     -------------------------------------------------------------- */
+        await bgMusic.play();
 
-  const musicToggle = document.getElementById("music-toggle");
-  const musicLabel = document.getElementById("music-label");
-  const audio = document.getElementById("bg-music");
-  let musicShown = false;
-  let isPlaying = false;
+        state.musicPlaying=true;
 
-  function revealMusicToggle() {
-    if (musicShown || !CONFIG.music?.src) return;
-    musicShown = true;
-    audio.src = CONFIG.music.src;
-    musicToggle.hidden = false;
-    // allow the browser to paint hidden=false before animating in
-    requestAnimationFrame(() => musicToggle.classList.add("is-visible"));
-  }
+        updateMusicUI();
 
-  musicToggle?.addEventListener("click", () => {
-    if (isPlaying) {
-      audio.pause();
-    } else {
-      audio.play().catch(() => {
-        /* Autoplay/permission errors are silently ignored — the
-           control simply stays in its paused state. */
-      });
-    }
-  });
-
-  audio?.addEventListener("play", () => {
-    isPlaying = true;
-    musicToggle.classList.add("is-playing");
-    musicToggle.setAttribute("aria-pressed", "true");
-    musicToggle.setAttribute("aria-label", "Pause music");
-    if (musicLabel) musicLabel.textContent = CONFIG.music.label || "Playing";
-  });
-
-  audio?.addEventListener("pause", () => {
-    isPlaying = false;
-    musicToggle.classList.remove("is-playing");
-    musicToggle.setAttribute("aria-pressed", "false");
-    musicToggle.setAttribute("aria-label", "Play music");
-    if (musicLabel) musicLabel.textContent = "Play Music";
-  });
-
-  /* -----------------------------------------------------------------
-     8. AMBIENT PARTICLE CANVAS
-     Lightweight drifting dots. Skips the animation loop entirely
-     when the user prefers reduced motion, and keeps particle count
-     tied to viewport area so small phones stay light.
-     -------------------------------------------------------------- */
-
-  function setupParticles() {
-    const canvas = document.getElementById("particles");
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    let width, height, particles, dpr;
-    let rafId = null;
-
-    function resize() {
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
-      width = canvas.clientWidth;
-      height = canvas.clientHeight;
-      canvas.width = width * dpr;
-      canvas.height = height * dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      const count = Math.round((width * height) / 26000);
-      particles = Array.from({ length: Math.min(count, 46) }, () => makeParticle());
     }
 
-    function makeParticle() {
-      return {
-        x: Math.random() * width,
-        y: Math.random() * height,
-        r: Math.random() * 1.4 + 0.4,
-        vy: -(Math.random() * 0.12 + 0.03),
-        vx: (Math.random() - 0.5) * 0.05,
-        alpha: Math.random() * 0.4 + 0.15,
-      };
+    catch(err){
+
+        console.warn(
+
+            "Autoplay prevented.",
+
+            err
+
+        );
+
     }
 
-    function draw() {
-      ctx.clearRect(0, 0, width, height);
-      ctx.fillStyle = "#ecd9b6";
-      particles.forEach((p) => {
-        p.x += p.vx;
-        p.y += p.vy;
-        if (p.y < -4) { p.y = height + 4; p.x = Math.random() * width; }
-        if (p.x < -4) p.x = width + 4;
-        if (p.x > width + 4) p.x = -4;
+}
 
-        ctx.globalAlpha = p.alpha;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fill();
-      });
-      ctx.globalAlpha = 1;
-      rafId = requestAnimationFrame(draw);
+
+
+function pauseMusic(){
+
+    bgMusic.pause();
+
+    state.musicPlaying=false;
+
+    updateMusicUI();
+
+}
+
+
+
+function toggleMusic(){
+
+    if(state.musicPlaying){
+
+        pauseMusic();
+
+    }else{
+
+        playMusic();
+
     }
 
-    resize();
+}
 
-    if (prefersReducedMotion) {
-      draw(); // paint a single static frame, then stop
-      cancelAnimationFrame(rafId);
-      return;
+
+
+musicButton.addEventListener(
+
+    "click",
+
+    toggleMusic,
+
+    {passive:true}
+
+);
+
+/*==============================================================
+SCROLL PROGRESS
+==============================================================*/
+
+function updateProgress(){
+
+    const scrollTop=
+
+        window.scrollY;
+
+    const scrollHeight=
+
+        document.documentElement.scrollHeight-
+
+        window.innerHeight;
+
+    const progress=
+
+        scrollHeight<=0
+
+        ?0
+
+        :(scrollTop/scrollHeight)*100;
+
+    progressBar.style.width=
+
+        progress+"%";
+
+}
+
+
+
+window.addEventListener(
+
+    "scroll",
+
+    updateProgress,
+
+    {
+
+        passive:true
+
     }
 
-    draw();
+);
 
-    let resizeTimer;
-    window.addEventListener(
-      "resize",
-      () => {
+/*==============================================================
+INTRO TRANSITION
+==============================================================*/
+
+async function startJourney(){
+
+    if(state.started){
+
+        return;
+
+    }
+
+    state.started=true;
+
+    startButton.style.opacity="0";
+
+    startButton.style.pointerEvents="none";
+
+    await wait(350);
+
+    welcomeScreen.classList.add("hidden");
+
+    envelopeScreen.classList.remove("hidden");
+
+    easeScroll(envelopeScreen);
+
+}
+/*==============================================================
+ENVELOPE INTERACTION
+==============================================================*/
+
+startButton.addEventListener(
+    "click",
+    startJourney,
+    { passive: true }
+);
+
+async function openEnvelope() {
+
+    if (state.envelopeOpened) {
+        return;
+    }
+
+    state.envelopeOpened = true;
+
+    /* Bounce */
+
+    envelope.classList.add("bounce");
+
+    await wait(650);
+
+    envelope.classList.remove("bounce");
+
+    /* Blur Background */
+
+    document.body.classList.add("blur-background");
+
+    blurOverlay.classList.add("active");
+
+    await wait(180);
+
+    /* Open Flap */
+
+    envelope.classList.add("open");
+
+    await wait(850);
+
+    /* Reveal Letter */
+
+    revealLetter();
+
+}
+
+envelope.addEventListener(
+    "click",
+    openEnvelope,
+    { passive: true }
+);
+
+/*==============================================================
+LETTER REVEAL
+==============================================================*/
+
+async function revealLetter() {
+
+    letterScreen.classList.remove("hidden");
+
+    await wait(120);
+
+    easeScroll(letterScreen);
+
+    await wait(500);
+
+    letterPaper.classList.add("revealed");
+
+    document.body.classList.add("letter-open");
+
+    /* Remove Blur */
+
+    await wait(500);
+
+    blurOverlay.classList.remove("active");
+
+    document.body.classList.remove("blur-background");
+
+    /* Auto play music after interaction */
+
+    if (!state.musicPlaying) {
+        playMusic();
+    }
+
+    /* Continue toward gallery */
+
+    await wait(1200);
+
+    galleryScreen.classList.remove("hidden");
+
+}
+
+/*==============================================================
+LETTER ANIMATION HELPERS
+==============================================================*/
+
+function revealElement(element) {
+
+    if (!element) return;
+
+    element.classList.add("show");
+
+}
+
+function hideElement(element) {
+
+    if (!element) return;
+
+    element.classList.remove("show");
+
+}
+
+/*==============================================================
+PHOTO CARD REVEAL
+==============================================================*/
+
+async function revealGallerySequential() {
+
+    for (const card of photoCards) {
+
+        card.classList.add("visible");
+
+        await wait(SETTINGS.galleryDelay);
+
+    }
+
+}/*==============================================================
+INTERSECTION OBSERVER
+==============================================================*/
+
+const observerOptions = {
+    root: null,
+    rootMargin: "0px 0px -10% 0px",
+    threshold: 0.18
+};
+
+const revealObserver = new IntersectionObserver((entries) => {
+
+    entries.forEach((entry) => {
+
+        if (!entry.isIntersecting) return;
+
+        const target = entry.target;
+
+        if (target.classList.contains("photo-card")) {
+            target.classList.add("visible");
+        }
+
+        if (target.classList.contains("fade-up")) {
+            target.classList.add("show");
+        }
+
+        revealObserver.unobserve(target);
+
+    });
+
+}, observerOptions);
+
+/*==============================================================
+REGISTER OBSERVERS
+==============================================================*/
+
+function registerObservers() {
+
+    photoCards.forEach((card) => {
+        revealObserver.observe(card);
+    });
+
+    $$(".fade-up").forEach((item) => {
+        revealObserver.observe(item);
+    });
+
+}
+
+/*==============================================================
+GALLERY FLOW
+==============================================================*/
+
+async function initializeGallery() {
+
+    await wait(600);
+
+    revealGallerySequential();
+
+}
+
+/*==============================================================
+ENDING SECTION
+==============================================================*/
+
+function watchEnding() {
+
+    if (!endingScreen) return;
+
+    revealObserver.observe(endingScreen);
+
+}
+
+/*==============================================================
+KEYBOARD SUPPORT
+==============================================================*/
+
+document.addEventListener("keydown", (event) => {
+
+    switch (event.key) {
+
+        case "Enter":
+
+        case " ":
+
+            if (
+                document.activeElement === startButton &&
+                !state.started
+            ) {
+
+                event.preventDefault();
+                startJourney();
+
+            }
+
+            if (
+                document.activeElement === envelope &&
+                !state.envelopeOpened
+            ) {
+
+                event.preventDefault();
+                openEnvelope();
+
+            }
+
+            break;
+
+        case "m":
+
+        case "M":
+
+            toggleMusic();
+            break;
+
+        default:
+            break;
+    }
+
+});
+
+/*==============================================================
+RESIZE HANDLER
+==============================================================*/
+
+let resizeTimer;
+
+window.addEventListener(
+
+    "resize",
+
+    () => {
+
         clearTimeout(resizeTimer);
+
         resizeTimer = setTimeout(() => {
-          cancelAnimationFrame(rafId);
-          resize();
-          draw();
-        }, 180);
-      },
-      { passive: true }
+
+            updateProgress();
+
+        }, 120);
+
+    },
+
+    { passive: true }
+
+);
+
+/*==============================================================
+VISIBILITY API
+==============================================================*/
+
+document.addEventListener("visibilitychange", () => {
+
+    if (document.hidden && state.musicPlaying) {
+
+        bgMusic.pause();
+
+    }
+
+    if (!document.hidden && state.musicPlaying) {
+
+        bgMusic.play().catch(() => {});
+
+    }
+
+});
+
+/*==============================================================
+INITIALIZATION
+==============================================================*/
+
+function initializeScreens() {
+
+    envelopeScreen.classList.add("hidden");
+    letterScreen.classList.add("hidden");
+    galleryScreen.classList.add("hidden");
+
+}
+
+function initializeMusic() {
+
+    bgMusic.volume = SETTINGS.musicVolume;
+
+    updateMusicUI();
+
+}
+
+function initializeEnvelopeAccessibility() {
+
+    envelope.tabIndex = 0;
+
+    envelope.setAttribute(
+        "role",
+        "button"
     );
-  }
 
-  /* -----------------------------------------------------------------
-     9. INIT
-     -------------------------------------------------------------- */
+    envelope.setAttribute(
+        "aria-label",
+        "Open Envelope"
+    );
 
-  function init() {
-    fillContent();
-    renderLetter();
-    setupParticles();
-  }
+}
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", init);
-  } else {
-    init();
-  }
-})();
+function initialize() {
+
+    buildParticles();
+
+    initializeScreens();
+
+    initializeMusic();
+
+    initializeEnvelopeAccessibility();
+
+    registerObservers();
+
+    watchEnding();
+
+    initializeGallery();
+
+    updateProgress();
+
+}
+
+document.addEventListener(
+
+    "DOMContentLoaded",
+
+    initialize
+
+);
+
+/*==============================================================
+END OF FILE
+==============================================================*/

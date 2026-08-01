@@ -1,277 +1,417 @@
 /*==================================================
     SURPRISE JOURNEY V3
-    FINAL SCRIPT.JS
+    FINAL SCRIPT.JS V2 PART 1
 ==================================================*/
-
 
 document.addEventListener("DOMContentLoaded",()=>{
 
-
-/*==================================================
-    GSAP
-==================================================*/
-
 gsap.registerPlugin(ScrollTrigger);
 
-
-
-
 /*==================================================
-    INITIAL SCROLL LOCK
+    VARIABLES
 ==================================================*/
 
-
-let journeyUnlocked = false;
-
-
-function preventScroll(e){
-
-    if(!journeyUnlocked){
-
-        e.preventDefault();
-
-    }
-
-}
-
-
-window.addEventListener(
-"wheel",
-preventScroll,
-{
-    passive:false
-});
-
-
-window.addEventListener(
-"touchmove",
-preventScroll,
-{
-    passive:false
-});
-
-
-window.addEventListener(
-"keydown",
-(e)=>{
-
-
-if(
-!journeyUnlocked &&
-[
-"ArrowDown",
-"ArrowUp",
-"Space",
-"PageDown",
-"PageUp"
-]
-.includes(e.code)
-){
-
-e.preventDefault();
-
-}
-
-
-});
-
-
-
+const CONFIG_READY=typeof CONFIG!=="undefined";
+let journeyUnlocked=false;
+let letterDone=false;
+let finalDone=false;
 
 /*==================================================
     CONFIG APPLY
 ==================================================*/
 
+if(CONFIG_READY){
 
-if(typeof CONFIG !== "undefined"){
+document.title=CONFIG.title;
 
+const heroTitle=document.querySelector(".hero-card h1");
 
-document.title =
-CONFIG.title;
-
-
-const title =
-document.querySelector(
-".hero-card h1"
-);
-
-
-if(title){
-
-title.innerHTML =
-CONFIG.title.replace(
-" ",
-"<br>"
-);
-
+if(heroTitle){
+heroTitle.innerHTML=CONFIG.title.replaceAll(" ","<br>");
 }
 
-
 }
-
-
-
-
-
 
 /*==================================================
-    FLOATING STARS
+    SCROLL LOCK
 ==================================================*/
 
+document.body.classList.add("locked");
 
-const stars =
-document.getElementById("stars");
+function unlockJourney(){
 
+journeyUnlocked=true;
+
+document.body.classList.remove("locked");
+
+}
+
+/*==================================================
+    STARS
+==================================================*/
+
+const stars=document.getElementById("stars");
 
 function createStars(){
 
+if(!stars)return;
 
-if(!stars) return;
+const count=window.innerWidth<768?50:120;
 
+for(let i=0;i<count;i++){
 
-for(let i=0;i<120;i++){
-
-
-const star =
-document.createElement("span");
-
+const star=document.createElement("span");
 
 star.className="star";
 
-
-star.style.left =
-Math.random()*100+"%";
-
-
-star.style.animationDuration =
-(5+Math.random()*10)+"s";
-
-
-star.style.animationDelay =
-Math.random()*10+"s";
-
+star.style.left=Math.random()*100+"%";
+star.style.top=Math.random()*100+"%";
+star.style.animationDuration=(5+Math.random()*10)+"s";
+star.style.animationDelay=Math.random()*10+"s";
 
 stars.appendChild(star);
 
-
 }
 
-
 }
-
 
 createStars();
-
-
-
-
-
 
 /*==================================================
     MOUSE GLOW
 ==================================================*/
 
-
-const mouseGlow =
-document.getElementById(
-"mouseGlow"
-);
-
-
-window.addEventListener(
-"mousemove",
-(e)=>{
-
+const mouseGlow=document.getElementById("mouseGlow");
 
 if(mouseGlow){
 
-gsap.to(
-mouseGlow,
-{
+window.addEventListener("mousemove",(e)=>{
 
+gsap.to(mouseGlow,{
 x:e.clientX,
-
 y:e.clientY,
-
 duration:.8,
-
 ease:"power3.out"
+});
+
+});
 
 }
 
+/*==================================================
+    LOADER
+==================================================*/
+
+const loader=document.getElementById("loader");
+const progress=document.getElementById("loaderProgress");
+
+function removeLoader(){
+
+if(!loader){
+
+startIntro();
+
+return;
+
+}
+
+gsap.to(loader,{
+opacity:0,
+duration:1,
+onComplete:()=>{
+
+loader.remove();
+
+startIntro();
+
+}
+
+});
+
+}
+
+if(progress){
+
+let value=0;
+
+const timer=setInterval(()=>{
+
+value+=Math.random()*10;
+
+progress.style.width=value+"%";
+
+if(value>=100){
+
+clearInterval(timer);
+
+progress.style.width="100%";
+
+setTimeout(removeLoader,700);
+
+}
+
+},120);
+
+}else{
+
+removeLoader();
+
+}
+
+/*==================================================
+    HERO INTRO
+==================================================*/
+
+function startIntro(){
+
+const tl=gsap.timeline();
+
+tl.from(".hero-card",{
+opacity:0,
+y:100,
+scale:.95,
+duration:1.5,
+ease:"power4.out"
+})
+.from(".badge",{
+opacity:0,
+y:-30,
+duration:.8
+},"-=.8")
+.from(".hero-card h1",{
+opacity:0,
+y:60,
+filter:"blur(15px)",
+duration:1.2
+},"-=.5")
+.from(".hero-card p",{
+opacity:0,
+y:40,
+duration:1
+},"-=.7")
+.from(".envelope",{
+opacity:0,
+scale:.5,
+rotationY:180,
+duration:1.5,
+ease:"back.out"
+},"-=.5")
+.from("#startBtn",{
+opacity:0,
+y:30,
+duration:1
+},"-=.5");
+
+}
+
+/*==================================================
+    ENVELOPE
+==================================================*/
+
+const envelope=document.getElementById("envelope");
+const startBtn=document.getElementById("startBtn");
+
+if(startBtn&&envelope){
+
+startBtn.addEventListener("click",()=>{
+
+unlockJourney();
+
+envelope.classList.add("open");
+
+gsap.to(startBtn,{
+opacity:0,
+scale:0,
+duration:.5
+});
+
+setTimeout(()=>{
+
+document.querySelector(".letter")?.scrollIntoView({
+behavior:"smooth"
+});
+
+typeLetter();
+
+},1200);
+
+});
+
+}
+
+/*==================================================
+    TYPEWRITER
+==================================================*/
+
+function typeWriter(element,text,speed=45){
+
+if(!element||!text)return;
+
+element.innerHTML="";
+
+let index=0;
+
+function write(){
+
+if(index<text.length){
+
+element.innerHTML+=text.charAt(index);
+
+index++;
+
+setTimeout(write,speed);
+
+}
+
+}
+
+write();
+
+}
+
+function typeLetter(){
+
+if(letterDone||!CONFIG_READY)return;
+
+letterDone=true;
+
+typeWriter(
+document.getElementById("typewriter"),
+CONFIG.letter
 );
 
 }
 
+/*==================================================
+    BUTTON NAVIGATION
+==================================================*/
+
+document.getElementById("continueBtn")?.addEventListener("click",()=>{
+
+document.querySelector(".journey")?.scrollIntoView({
+behavior:"smooth"
+});
 
 });
 
+document.getElementById("journeyBtn")?.addEventListener("click",()=>{
 
+document.querySelector(".gallery")?.scrollIntoView({
+behavior:"smooth"
+});
 
+});
 
+/*==================================================
+    GALLERY CREATE
+==================================================*/
+
+const gallery=document.getElementById("galleryGrid");
+
+if(gallery&&CONFIG_READY){
+
+CONFIG.photos.forEach((photo,index)=>{
+
+const card=document.createElement("div");
+
+card.className="photo-card reveal";
+
+const img=document.createElement("img");
+
+img.src=photo;
+img.alt=`Memory ${index+1}`;
+img.loading="lazy";
+
+card.appendChild(img);
+
+gallery.appendChild(card);
+
+});
+
+}
+
+ScrollTrigger.refresh();
+
+    /*==================================================
+    GALLERY LIGHTBOX
+==================================================*/
+
+function openViewer(src){
+
+const overlay=document.createElement("div");
+
+overlay.className="image-viewer";
+
+overlay.innerHTML=`
+<img src="${src}">
+`;
+
+document.body.appendChild(overlay);
+
+gsap.from(overlay,{
+opacity:0,
+duration:.5
+});
+
+overlay.addEventListener("click",()=>{
+
+gsap.to(overlay,{
+opacity:0,
+duration:.4,
+onComplete:()=>overlay.remove()
+});
+
+});
+
+}
+
+document.querySelectorAll(".photo-card img").forEach(img=>{
+
+img.addEventListener("click",()=>{
+
+openViewer(img.src);
+
+});
+
+});
 
 
 /*==================================================
     GOLD PARTICLES
 ==================================================*/
 
+let particleTime=0;
 
 function createParticle(x,y){
 
+const particle=document.createElement("span");
 
-const p =
-document.createElement("span");
+particle.className="gold-particle";
 
+particle.style.left=x+"px";
+particle.style.top=y+"px";
 
-p.className =
-"gold-particle";
+document.body.appendChild(particle);
 
-
-p.style.left =
-x+"px";
-
-
-p.style.top =
-y+"px";
-
-
-document.body.appendChild(p);
-
-
-
-gsap.to(
-p,
-{
-
+gsap.to(particle,{
 y:-80,
-
 opacity:0,
-
 scale:0,
-
 duration:1,
-
-onComplete(){
-
-p.remove();
+onComplete:()=>particle.remove()
+});
 
 }
 
-}
+window.addEventListener("mousemove",(e)=>{
 
-);
+const now=Date.now();
 
+if(now-particleTime>80){
 
-}
+particleTime=now;
 
-
-
-window.addEventListener(
-"mousemove",
-(e)=>{
-
-
-if(Math.random()>.88){
+if(Math.random()>.75){
 
 createParticle(
 e.clientX,
@@ -280,979 +420,217 @@ e.clientY
 
 }
 
+}
 
 });
-
-
-
-
-
-
-
-/*==================================================
-    LOADER
-==================================================*/
-
-
-const loader =
-document.getElementById(
-"loader"
-);
-
-
-const progress =
-document.getElementById(
-"loaderProgress"
-);
-
-
-
-function startPage(){
-
-
-if(loader){
-
-
-gsap.to(
-loader,
-{
-
-opacity:0,
-
-duration:1,
-
-onComplete:()=>{
-
-loader.remove();
-
-document.body.classList.add("locked");
-
-startIntro();
-
-}
-
-}
-
-);
-
-
-}
-else{
-
-
-startIntro();
-
-
-}
-
-
-}
-
-
-
-
-if(progress){
-
-
-let value=0;
-
-
-const timer =
-setInterval(()=>{
-
-
-value += Math.random()*10;
-
-
-progress.style.width =
-value+"%";
-
-
-if(value>=100){
-
-
-clearInterval(timer);
-
-
-progress.style.width="100%";
-
-
-setTimeout(
-startPage,
-700
-);
-
-
-}
-
-
-},120);
-
-
-
-}
-else{
-
-
-startPage();
-
-
-}
-
-
-
-
-
-
-
-
-/*==================================================
-    HERO INTRO
-==================================================*/
-
-
-function startIntro(){
-
-
-const tl =
-gsap.timeline();
-
-
-
-tl.from(
-".hero-card",
-{
-opacity:0,
-y:100,
-scale:.95,
-duration:1.5,
-ease:"power4.out"
-}
-)
-
-
-
-.from(
-".badge",
-{
-opacity:0,
-y:-30,
-duration:.8
-},
-"-=.8"
-)
-
-
-
-.from(
-".hero-card h1",
-{
-opacity:0,
-y:60,
-filter:"blur(15px)",
-duration:1.2,
-ease:"power3.out"
-},
-"-=.5"
-)
-
-
-
-.from(
-".hero-card p",
-{
-opacity:0,
-y:40,
-duration:1
-},
-"-=.7"
-)
-
-
-
-.from(
-".envelope",
-{
-opacity:0,
-scale:.5,
-rotationY:180,
-duration:1.6,
-ease:"back.out"
-},
-"-=.5"
-)
-
-
-
-.from(
-"#startBtn",
-{
-opacity:0,
-y:30,
-duration:1
-},
-"-=.5"
-);
-
-
-
-}
-/*==================================================
-    ENVELOPE OPEN
-==================================================*/
-
-
-const envelope =
-document.getElementById(
-"envelope"
-);
-
-
-const startBtn =
-document.getElementById(
-"startBtn"
-);
-
-
-
-if(startBtn && envelope){
-
-
-startBtn.addEventListener(
-"click",
-()=>{
-
-
-journeyUnlocked=true;
-    document.body.classList.remove("locked");
-
-
-
-window.removeEventListener(
-"wheel",
-preventScroll
-);
-
-
-window.removeEventListener(
-"touchmove",
-preventScroll
-);
-
-
-
-
-envelope.classList.add(
-"open"
-);
-
-
-
-gsap.to(
-startBtn,
-{
-
-opacity:0,
-
-scale:0,
-
-duration:.5
-
-}
-
-);
-
-
-
-setTimeout(()=>{
-
-
-document
-.querySelector(".letter")
-?.scrollIntoView(
-{
-behavior:"smooth"
-}
-);
-
-
-
-typeLetter();
-
-
-},1200);
-
-
-
-});
-
-
-}
-
-
-
-
-
-
-
-/*==================================================
-    TYPEWRITER
-==================================================*/
-
-
-function typeWriter(
-element,
-text,
-speed=45
-){
-
-
-if(!element)return;
-
-
-element.innerHTML="";
-
-
-let i=0;
-
-
-
-function write(){
-
-
-if(i<text.length){
-
-
-element.innerHTML +=
-text.charAt(i);
-
-
-i++;
-
-
-setTimeout(
-write,
-speed
-);
-
-
-}
-
-
-}
-
-
-
-write();
-
-
-}
-
-
-
-let letterDone=false;
-
-
-
-function typeLetter(){
-
-
-if(letterDone)return;
-
-
-if(typeof CONFIG==="undefined")
-return;
-
-
-letterDone=true;
-
-
-typeWriter(
-document.getElementById(
-"typewriter"
-),
-CONFIG.letter
-);
-
-
-}
-
-
-
-
-
-
-
-
-/*==================================================
-    BUTTON NAVIGATION
-==================================================*/
-
-
-document
-.getElementById(
-"continueBtn"
-)
-?.addEventListener(
-"click",
-()=>{
-
-
-document
-.querySelector(".journey")
-?.scrollIntoView(
-{
-behavior:"smooth"
-}
-);
-
-
-});
-
-
-
-
-document
-.getElementById(
-"journeyBtn"
-)
-?.addEventListener(
-"click",
-()=>{
-
-
-document
-.querySelector(".gallery")
-?.scrollIntoView(
-{
-behavior:"smooth"
-}
-);
-
-
-});
-
-
-
-
-
-
-
-
-/*==================================================
-    GALLERY CREATE
-==================================================*/
-
-
-const gallery =
-document.getElementById(
-"galleryGrid"
-);
-
-
-
-if(
-gallery &&
-typeof CONFIG!=="undefined"
-){
-
-
-CONFIG.photos.forEach(
-(photo,index)=>{
-
-
-const card =
-document.createElement(
-"div"
-);
-
-
-card.className =
-"photo-card reveal";
-
-
-
-card.innerHTML = `
-
-<img src="${photo}"
-alt="Memory ${index+1}"
-loading="lazy">
-
-`;
-
-
-
-gallery.appendChild(card);
-
-
-});
-
-
-}
-/*==================================================
- GALLERY LIGHTBOX
-==================================================*/
-
-
-const galleryImages =
-document.querySelectorAll(
-".photo-card img"
-);
-
-
-
-galleryImages.forEach(img=>{
-
-
-img.addEventListener(
-"click",
-()=>{
-
-
-const overlay =
-document.createElement("div");
-
-
-overlay.className=
-"image-viewer";
-
-
-
-overlay.innerHTML=`
-
-<img src="${img.src}">
-
-`;
-
-
-
-document.body.appendChild(
-overlay
-);
-
-
-
-gsap.from(
-overlay,
-{
-
-opacity:0,
-
-duration:.5
-
-}
-);
-
-
-
-overlay.onclick=()=>{
-
-gsap.to(
-overlay,
-{
-
-opacity:0,
-
-duration:.4,
-
-onComplete:()=>overlay.remove()
-
-}
-
-);
-
-
-};
-
-
-
-});
-
-
-});
-/*==================================================
-    PHOTO TILT
-==================================================*/
-
-
-document
-.querySelectorAll(
-".photo-card"
-)
-.forEach(photo=>{
-
-
-photo.addEventListener(
-"mousemove",
-(e)=>{
-
-
-const rect =
-photo.getBoundingClientRect();
-
-
-gsap.to(
-photo,
-{
-
-rotationX:
-((e.clientY-rect.top)
-/rect.height-.5)*15,
-
-
-rotationY:
-((e.clientX-rect.left)
-/rect.width-.5)*-15,
-
-
-transformPerspective:900,
-
-duration:.3
-
-}
-
-);
-
-
-});
-
-
-
-photo.addEventListener(
-"mouseleave",
-()=>{
-
-
-gsap.to(
-photo,
-{
-
-rotationX:0,
-
-rotationY:0,
-
-duration:.6
-
-}
-
-);
-
-
-});
-
-
-});
-
-
-
-
-
-
 
 
 /*==================================================
     MAGNETIC BUTTON
 ==================================================*/
 
+document.querySelectorAll(".btn").forEach(btn=>{
 
-document
-.querySelectorAll(".btn")
-.forEach(btn=>{
+btn.addEventListener("mousemove",(e)=>{
 
+const rect=btn.getBoundingClientRect();
 
-btn.addEventListener(
-"mousemove",
-(e)=>{
-
-
-const r =
-btn.getBoundingClientRect();
-
-
-gsap.to(
-btn,
-{
-
-x:
-(e.clientX-r.left-r.width/2)*.25,
-
-y:
-(e.clientY-r.top-r.height/2)*.25,
-
+gsap.to(btn,{
+x:(e.clientX-rect.left-rect.width/2)*.25,
+y:(e.clientY-rect.top-rect.height/2)*.25,
 duration:.3
-
-}
-
-);
-
+});
 
 });
 
+btn.addEventListener("mouseleave",()=>{
 
-
-btn.addEventListener(
-"mouseleave",
-()=>{
-
-
-gsap.to(
-btn,
-{
-
+gsap.to(btn,{
 x:0,
-
 y:0,
-
-duration:.5
-
-}
-
-);
-
+duration:.5,
+ease:"elastic.out(1,.3)"
+});
 
 });
 
-
 });
-
-
-
-
-
 
 
 /*==================================================
-    GLASS TILT
+    GLASS TILT DESKTOP ONLY
 ==================================================*/
 
+if(window.innerWidth>768){
 
-document
-.querySelectorAll(".glass")
-.forEach(card=>{
+document.querySelectorAll(".glass").forEach(card=>{
 
+card.addEventListener("mousemove",(e)=>{
 
-card.addEventListener(
-"mousemove",
-(e)=>{
+const rect=card.getBoundingClientRect();
 
+const rotateX=((e.clientY-rect.top)/rect.height-.5)*10;
 
-const r =
-card.getBoundingClientRect();
+const rotateY=((e.clientX-rect.left)/rect.width-.5)*-10;
 
-
-gsap.to(
-card,
-{
-
-rotationX:
-((e.clientY-r.top)
-/r.height-.5)*10,
-
-
-rotationY:
-((e.clientX-r.left)
-/r.width-.5)*-10,
-
-
-duration:.3,
-
-transformPerspective:1000
-
-}
-
-);
-
+gsap.to(card,{
+rotationX:rotateX,
+rotationY:rotateY,
+transformPerspective:1000,
+duration:.3
+});
 
 });
 
 
-card.addEventListener(
-"mouseleave",
-()=>{
+card.addEventListener("mouseleave",()=>{
 
-
-gsap.to(
-card,
-{
-
+gsap.to(card,{
 rotationX:0,
-
 rotationY:0,
-
 duration:.6
+});
+
+});
+
+});
 
 }
 
-);
 
+/*==================================================
+    PHOTO TILT
+==================================================*/
+
+if(window.innerWidth>768){
+
+document.querySelectorAll(".photo-card").forEach(photo=>{
+
+photo.addEventListener("mousemove",(e)=>{
+
+const rect=photo.getBoundingClientRect();
+
+gsap.to(photo,{
+rotationX:((e.clientY-rect.top)/rect.height-.5)*15,
+rotationY:((e.clientX-rect.left)/rect.width-.5)*-15,
+transformPerspective:900,
+duration:.3
+});
 
 });
 
 
+photo.addEventListener("mouseleave",()=>{
+
+gsap.to(photo,{
+rotationX:0,
+rotationY:0,
+duration:.6
 });
 
+});
 
+});
 
-
-
+}
 
 
 /*==================================================
-    SCROLL ANIMATION
+    SCROLL REVEAL
 ==================================================*/
 
+gsap.utils.toArray(".reveal").forEach(element=>{
 
-gsap.utils.toArray(
-".reveal"
-)
-.forEach(el=>{
-
-
-gsap.to(
-el,
-{
-
+gsap.to(element,{
 opacity:1,
-
 y:0,
-
 duration:1,
+scrollTrigger:{
+trigger:element,
+start:"top 85%"
+}
+});
+
+});
+
+
+/*==================================================
+    JOURNEY ANIMATION
+==================================================*/
+
+gsap.from(".stop",{
+
+scale:0,
+opacity:0,
+duration:.8,
+stagger:.3,
 
 scrollTrigger:{
-
-trigger:el,
-
-start:"top 85%"
-
+trigger:".journey-line",
+start:"top 75%"
 }
-
-}
-
-);
-
 
 });
 
 
+gsap.from(".road",{
 
+scaleX:0,
+transformOrigin:"left",
+duration:1,
+stagger:.4,
 
+scrollTrigger:{
+trigger:".journey-line",
+start:"top 75%"
+}
 
+});
 
 
 /*==================================================
     FINAL MESSAGE
 ==================================================*/
 
+document.getElementById("finishBtn")?.addEventListener("click",()=>{
 
-let finalDone=false;
-
-
-
-document
-.getElementById(
-"finishBtn"
-)
-?.addEventListener(
-"click",
-()=>{
-
-
-if(finalDone)return;
-
+if(finalDone||!CONFIG_READY)return;
 
 finalDone=true;
 
-
-
-document
-.querySelector(".final")
-?.scrollIntoView(
-{
+document.querySelector(".final")?.scrollIntoView({
 behavior:"smooth"
-}
-);
-
-
+});
 
 setTimeout(()=>{
 
-
 typeWriter(
-document.getElementById(
-"finalText"
-),
+document.getElementById("finalText"),
 CONFIG.finalMessage,
 60
 );
 
-
 },900);
+
 });
+
+
 /*==================================================
     REPLAY
 ==================================================*/
 
+document.getElementById("replayBtn")?.addEventListener("click",()=>{
 
-document
-.getElementById(
-"replayBtn"
-)
-?.addEventListener(
-"click",
-()=>{
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
 
+setTimeout(()=>{
 
 location.reload();
+
+},1000);
+
 });
-/*==================================================
- JOURNEY ANIMATION
-==================================================*/
-
-
-gsap.from(
-".stop",
-{
-
-scale:0,
-
-opacity:0,
-
-duration:.8,
-
-stagger:.3,
-
-scrollTrigger:{
-
-trigger:".journey-line",
-
-start:"top 75%"
-
-}
-
-}
-);
-
-
-
-gsap.from(
-".road",
-{
-
-scaleX:0,
-
-transformOrigin:"left",
-
-duration:1,
-
-stagger:.4,
-
-scrollTrigger:{
-
-trigger:".journey-line",
-
-start:"top 75%"
-
-}
-
-}
 });

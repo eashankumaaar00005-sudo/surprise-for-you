@@ -4,649 +4,721 @@
 ==================================================*/
 
 
-/*==================================================
-    GLOBAL SETUP
-==================================================*/
+document.addEventListener("DOMContentLoaded", () => {
 
-document.addEventListener("DOMContentLoaded",()=>{
 
+    /*==================================================
+        GSAP SETUP
+    ==================================================*/
 
-gsap.registerPlugin(ScrollTrigger);
+    gsap.registerPlugin(ScrollTrigger);
 
 
 
-/*==================================================
-    CREATE FLOATING STARS
-==================================================*/
+    /*==================================================
+        CONFIG APPLY
+    ==================================================*/
 
+    if (typeof CONFIG !== "undefined") {
 
-const starsContainer =
-document.getElementById("stars");
 
+        document.title = CONFIG.title;
 
-function createStars(){
 
-for(let i=0;i<120;i++){
+        const heroTitle =
+            document.querySelector(".hero-card h1");
 
-const star =
-document.createElement("span");
 
+        if (heroTitle) {
 
-star.className="star";
+            heroTitle.innerHTML =
+                CONFIG.title.replace(" ", "<br>");
 
+        }
 
-star.style.left =
-Math.random()*100+"%";
+    }
 
 
-star.style.animationDuration =
-(5 + Math.random()*10)+"s";
 
 
-star.style.animationDelay =
-(Math.random()*10)+"s";
+    /*==================================================
+        FLOATING STARS
+    ==================================================*/
 
 
-star.style.opacity =
-Math.random();
+    const starsContainer =
+        document.getElementById("stars");
 
 
-starsContainer.appendChild(star);
+    function createStars() {
 
-}
 
-}
+        if (!starsContainer) return;
 
 
-createStars();
+        for (let i = 0; i < 120; i++) {
 
 
+            const star =
+                document.createElement("span");
 
 
-/*==================================================
-    MOUSE GLOW
-==================================================*/
+            star.className = "star";
 
 
-const mouseGlow =
-document.getElementById("mouseGlow");
+            star.style.left =
+                Math.random() * 100 + "%";
 
 
-window.addEventListener(
-"mousemove",
-(e)=>{
+            star.style.animationDuration =
+                (5 + Math.random() * 10) + "s";
 
 
-gsap.to(
-mouseGlow,
-{
+            star.style.animationDelay =
+                Math.random() * 10 + "s";
 
-x:e.clientX,
 
-y:e.clientY,
+            star.style.opacity =
+                Math.random();
 
-duration:.8,
 
-ease:"power3.out"
+            starsContainer.appendChild(star);
 
-}
-);
+        }
 
+    }
 
-});
 
+    createStars();
 
 
 
-/*==================================================
-    LOADER
-==================================================*/
 
 
-const loader =
-document.getElementById("loader");
+    /*==================================================
+        MOUSE GLOW
+    ==================================================*/
 
 
-const progress =
-document.getElementById("loaderProgress");
+    const mouseGlow =
+        document.getElementById("mouseGlow");
 
 
-let loadValue=0;
+    if (mouseGlow) {
 
 
-const loaderInterval =
-setInterval(()=>{
+        window.addEventListener(
+            "mousemove",
+            (e) => {
 
 
-loadValue += Math.random()*8;
+                gsap.to(
+                    mouseGlow,
+                    {
 
+                        x: e.clientX,
 
-if(loadValue>=100){
+                        y: e.clientY,
 
+                        duration: 0.8,
 
-loadValue=100;
+                        ease: "power3.out"
 
+                    }
+                );
 
-clearInterval(loaderInterval);
 
+            }
+        );
 
+    }
 
-gsap.to(
-progress,
-{
-width:"100%",
-duration:.5
-}
-);
 
 
 
-setTimeout(()=>{
 
+    /*==================================================
+        LOADER
+    ==================================================*/
 
-gsap.to(
-loader,
-{
 
-opacity:0,
+    const loader =
+        document.getElementById("loader");
 
-duration:1,
 
-onComplete:()=>{
+    const progress =
+        document.getElementById("loaderProgress");
 
-loader.remove();
 
-startIntro();
 
-}
+    function removeLoader() {
 
-}
-);
 
+        if (!loader) {
 
+            startIntro();
 
-},700);
+            return;
 
+        }
 
 
-}
+        gsap.to(
+            loader,
+            {
 
+                opacity: 0,
 
-progress.style.width =
-loadValue+"%";
+                duration: 1,
 
+                onComplete: () => {
 
+                    loader.remove();
 
-},150);
+                    startIntro();
 
+                }
 
+            }
+        );
 
 
+    }
 
-/*==================================================
-    HERO INTRO
-==================================================*/
 
 
-function startIntro(){
+    if (progress) {
 
 
-const tl =
-gsap.timeline();
+        let value = 0;
 
 
+        const loaderTimer =
+            setInterval(() => {
 
-tl.from(
-".hero-card",
-{
 
-opacity:0,
+                value += Math.random() * 8;
 
-y:80,
 
-duration:1.4,
+                if (value >= 100) {
 
-ease:"power4.out"
 
-}
-)
+                    value = 100;
 
 
+                    clearInterval(loaderTimer);
 
-.from(
-".badge",
-{
 
-opacity:0,
+                    progress.style.width =
+                        "100%";
 
-scale:.5,
 
-duration:.8
+                    setTimeout(
+                        removeLoader,
+                        700
+                    );
 
-},
-"-=.8"
 
-)
+                }
 
 
+                progress.style.width =
+                    value + "%";
 
-.from(
-".envelope",
-{
 
-opacity:0,
+            }, 150);
 
-scale:.5,
 
-rotationY:180,
+    }
+    else {
 
-duration:1.5,
 
-ease:"back.out"
+        startIntro();
 
-},
-"-=.5"
+    }
 
-)
 
 
 
-.from(
-"#startBtn",
-{
 
-opacity:0,
+    /*==================================================
+        HERO INTRO
+    ==================================================*/
 
-y:30,
 
-duration:1
+    function startIntro() {
 
-},
-"-=.5"
 
-);
+        const timeline =
+            gsap.timeline();
 
 
 
-}
+        timeline
+            .from(
+                ".hero-card",
+                {
 
+                    opacity: 0,
 
+                    y: 80,
 
+                    duration: 1.4,
 
+                    ease: "power4.out"
 
+                }
+            )
 
-/*==================================================
-    ENVELOPE OPEN
-==================================================*/
 
+            .from(
+                ".badge",
+                {
 
-const envelope =
-document.getElementById("envelope");
+                    opacity: 0,
 
+                    scale: .5,
 
-const startBtn =
-document.getElementById("startBtn");
+                    duration: .8
 
+                },
+                "-=.8"
+            )
 
-startBtn.addEventListener(
-"click",
-()=>{
 
+            .from(
+                ".envelope",
+                {
 
-envelope.classList.add("open");
+                    opacity: 0,
 
+                    scale: .5,
 
+                    rotationY: 180,
 
-gsap.to(
-startBtn,
-{
+                    duration: 1.5,
 
-opacity:0,
+                    ease: "back.out"
 
-scale:0,
+                },
+                "-=.5"
+            )
 
-duration:.5
 
-}
-);
+            .from(
+                "#startBtn",
+                {
 
+                    opacity: 0,
 
+                    y: 30,
 
-setTimeout(()=>{
+                    duration: 1
 
+                },
+                "-=.5"
+            );
 
-document
-.querySelector(".letter")
-.scrollIntoView(
-{
-behavior:"smooth"
-}
-);
 
+    }
 
-typeLetter();
 
 
-},1200);
 
 
+    /*==================================================
+        ENVELOPE OPEN
+    ==================================================*/
 
-});
 
+    const envelope =
+        document.getElementById("envelope");
 
 
+    const startBtn =
+        document.getElementById("startBtn");
 
 
 
-/*==================================================
-    TYPEWRITER ENGINE
-==================================================*/
+    if (startBtn && envelope) {
 
 
-function typeWriter(
-element,
-text,
-speed=45
-){
+        startBtn.addEventListener(
+            "click",
+            () => {
 
 
-element.innerHTML="";
+                envelope.classList.add("open");
 
 
-let index=0;
+                gsap.to(
+                    startBtn,
+                    {
 
+                        opacity: 0,
 
+                        scale: 0,
 
-function write(){
+                        duration: .5
 
+                    }
+                );
 
-if(index<text.length){
 
 
-element.innerHTML +=
-text.charAt(index);
+                setTimeout(() => {
 
 
-index++;
+                    document
+                        .querySelector(".letter")
+                        ?.scrollIntoView(
+                            {
+                                behavior: "smooth"
+                            }
+                        );
 
 
-setTimeout(
-write,
-speed
-);
+                    typeLetter();
 
 
+                }, 1200);
 
-}
 
 
-}
+            }
+        );
 
 
+    }
 
-write();
 
 
-}
 
 
+    /*==================================================
+        TYPEWRITER
+    ==================================================*/
 
-let letterStarted=false;
 
+    function typeWriter(
+        element,
+        text,
+        speed = 45
+    ) {
 
 
-function typeLetter(){
+        if (!element) return;
 
 
-if(letterStarted)
-return;
+        element.innerHTML = "";
 
 
-letterStarted=true;
+        let index = 0;
 
 
 
-const target =
-document.getElementById(
-"typewriter"
-);
+        function write() {
 
 
+            if (index < text.length) {
 
-typeWriter(
-target,
-CONFIG.letter
-);
 
+                element.innerHTML +=
+                    text.charAt(index);
 
-}
 
+                index++;
 
 
+                setTimeout(
+                    write,
+                    speed
+                );
 
-/*==================================================
-    CONTINUE BUTTON
-==================================================*/
 
+            }
 
-const continueBtn =
-document.getElementById(
-"continueBtn"
-);
 
+        }
 
 
-continueBtn.addEventListener(
-"click",
-()=>{
+        write();
 
 
-document
-.querySelector(".journey")
-.scrollIntoView(
-{
-behavior:"smooth"
-}
-);
+    }
 
 
 
-}
-);
 
+    let letterStarted = false;
 
 
 
+    function typeLetter() {
 
 
+        if (letterStarted) return;
 
-/*==================================================
-    JOURNEY BUTTON
-==================================================*/
 
+        if (typeof CONFIG === "undefined")
+            return;
 
-document
-.getElementById("journeyBtn")
-.addEventListener(
-"click",
-()=>{
 
+        letterStarted = true;
 
-document
-.querySelector(".gallery")
-.scrollIntoView(
-{
-behavior:"smooth"
-}
-);
 
+        typeWriter(
 
+            document.getElementById("typewriter"),
 
-}
-);
+            CONFIG.letter
 
+        );
 
 
+    }
 
 
 
 
-/*==================================================
-    CREATE GALLERY (SAFE VERSION)
-==================================================*/
 
-const gallery =
-document.getElementById("galleryGrid");
+    /*==================================================
+        BUTTON NAVIGATION
+    ==================================================*/
 
 
-CONFIG.photos.forEach(
-(photo,index)=>{
+    document
+        .getElementById("continueBtn")
+        ?.addEventListener(
+            "click",
+            () => {
 
 
-const card =
-document.createElement("div");
+                document
+                    .querySelector(".journey")
+                    ?.scrollIntoView(
+                        {
+                            behavior:"smooth"
+                        }
+                    );
 
 
-card.className="photo-card reveal";
+            }
+        );
 
 
-const img =
-document.createElement("img");
 
 
-img.src = photo;
+    document
+        .getElementById("journeyBtn")
+        ?.addEventListener(
+            "click",
+            () => {
 
-img.alt =
-`Memory ${index+1}`;
 
+                document
+                    .querySelector(".gallery")
+                    ?.scrollIntoView(
+                        {
+                            behavior:"smooth"
+                        }
+                    );
 
-img.loading="lazy";
 
+            }
+        );
 
-img.onerror = function(){
 
-this.style.display="none";
 
-};
 
 
-card.appendChild(img);
 
+    /*==================================================
+        GALLERY
+    ==================================================*/
 
-gallery.appendChild(card);
 
+    const gallery =
+        document.getElementById("galleryGrid");
 
 
-});
-/*==================================================
-    SCROLL ANIMATIONS
-==================================================*/
 
+    if (
+        gallery &&
+        typeof CONFIG !== "undefined" &&
+        CONFIG.photos
+    ) {
 
-gsap.utils.toArray(
-".reveal"
-)
-.forEach(item=>{
 
+        CONFIG.photos.forEach(
+            (photo, index) => {
 
-gsap.to(
-item,
-{
 
-opacity:1,
+                const card =
+                    document.createElement("div");
 
-y:0,
 
-duration:1,
+                card.className =
+                    "photo-card reveal";
 
-scrollTrigger:{
 
-trigger:item,
 
-start:"top 85%"
+                card.innerHTML = `
 
-}
+                    <img 
+                    src="${photo}" 
+                    alt="Memory ${index+1}"
+                    loading="lazy">
 
-}
-);
+                `;
 
 
 
-});
+                gallery.appendChild(card);
 
 
+            }
+        );
 
 
+    }
 
 
 
-/*==================================================
-    FINAL MESSAGE
-==================================================*/
 
 
-const finishBtn =
-document.getElementById(
-"finishBtn"
-);
 
 
+    /*==================================================
+        SCROLL ANIMATIONS
+    ==================================================*/
 
-let finalStarted=false;
 
+    gsap.utils.toArray(".reveal")
+        .forEach(item => {
 
 
-finishBtn.addEventListener(
-"click",
-()=>{
+            gsap.to(
+                item,
+                {
 
+                    opacity:1,
 
-if(finalStarted)
-return;
+                    y:0,
 
+                    duration:1,
 
-finalStarted=true;
 
+                    scrollTrigger:{
 
+                        trigger:item,
 
-document
-.querySelector(".final")
-.scrollIntoView(
-{
-behavior:"smooth"
-}
-);
+                        start:"top 85%"
 
+                    }
 
+                }
+            );
 
-setTimeout(()=>{
 
+        });
 
-typeWriter(
-document.getElementById(
-"finalText"
-),
-CONFIG.finalMessage,
-60
-);
-},900);
-});
-/*==================================================
-    REPLAY
-==================================================*/
-document
-.getElementById("replayBtn")
-.addEventListener(
-"click",
-()=>{
-window.scrollTo(
-{
-top:0,
-behavior:"smooth"
-}
-);
-setTimeout(()=>{
-location.reload();
-},1200);
-});
+
+
+
+
+    gsap.utils.toArray(".section")
+        .forEach(section => {
+
+
+            gsap.from(
+                section,
+                {
+
+                    opacity:0,
+
+                    y:40,
+
+                    duration:1,
+
+
+                    scrollTrigger:{
+
+                        trigger:section,
+
+                        start:"top 90%"
+
+                    }
+
+                }
+            );
+
+
+        });
+
+    /*==================================================
+        FINAL MESSAGE
+    ==================================================*/
+
+    let finalStarted = false;
+    document
+        .getElementById("finishBtn")
+        ?.addEventListener(
+            "click",
+            () => {
+                if(finalStarted)
+                    return;
+                finalStarted = true;
+                document
+                    .querySelector(".final")
+                    ?.scrollIntoView(
+                        {
+                            behavior:"smooth"
+                        }
+                    );
+                setTimeout(
+                    () => {
+
+
+                        if(typeof CONFIG !== "undefined"){
+
+
+                            typeWriter(
+
+                                document.getElementById(
+                                    "finalText"
+                                ),
+                                CONFIG.finalMessage,
+                                60
+                            );
+                        }
+                    },
+                    900
+                );
+            }
+        );
+
+    /*==================================================
+        REPLAY
+    ==================================================*/
+
+    document
+        .getElementById("replayBtn")
+        ?.addEventListener(
+            "click",
+            () => {
+                window.scrollTo(
+                    {
+                        top:0,
+                        behavior:"smooth"
+                    }
+                );
+                setTimeout(
+                    () => {
+                        location.reload();
+                    },
+                    1200
+                );
+            }
+        );
 });

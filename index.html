@@ -1,276 +1,179 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!--
-        ============================================================
-        A Secret Journey
-        Premium Interactive Romantic Experience
-        Mobile First
-        ============================================================
-    -->
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  />
+  <meta name="theme-color" content="#0e0b0c" />
+  <meta name="description" content="A Secret Journey — a private digital gift." />
+  <title>A Secret Journey</title>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <!-- Fonts: distinctive editorial pairing -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Manrope:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
 
-    <title>A Secret Journey</title>
-
-    <meta name="theme-color" content="#0B0B10">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
-    <meta
-        name="description"
-        content="A premium interactive romantic digital surprise."
-    >
-
-    <!-- Preload -->
-    <link rel="preload" href="css/style.css" as="style">
-    <link rel="preload" href="js/script.js" as="script">
-
-    <!-- Google Font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 
-<body>
-
-<!-- ========================================================= -->
-<!-- Animated Background -->
-<!-- ========================================================= -->
-
-<div class="background">
-
-    <div class="gradient-layer"></div>
-
-    <div class="glow glow-1"></div>
-    <div class="glow glow-2"></div>
-    <div class="glow glow-3"></div>
-
-    <div class="particles" id="particles"></div>
-
-</div>
-
-<!-- ========================================================= -->
-<!-- Main App -->
-<!-- ========================================================= -->
-
-<main id="app">
-
-<!-- ========================================================= -->
-<!-- Welcome Screen -->
-<!-- ========================================================= -->
-
-<section
-class="screen welcome-screen active"
-id="welcome">
-
-<div
-class="glass-panel"
-id="welcomeContent">
-
-</div>
-
-</section>
-
-<!-- ========================================================= -->
-<!-- Envelope Scene -->
-<!-- ========================================================= -->
-
-<section
-class="screen envelope-screen hidden"
-id="envelopeScene">
-
-<div class="scene-wrapper">
-
-<div class="envelope-container">
-
-<div
-class="envelope"
-id="envelope">
-
-<div class="envelope-shadow"></div>
-
-<div class="envelope-back"></div>
-
-<div
-class="envelope-letter-slot">
-
-<div
-class="letter-preview">
-
-<div class="paper-line"></div>
-<div class="paper-line"></div>
-<div class="paper-line short"></div>
-
-</div>
-
-</div>
-
-<div
-class="envelope-front">
-
-</div>
-
-<div
-class="envelope-flap">
-
-</div>
-
-</div>
-
-</div>
-<div
-class="instruction"
-id="envelopeInstruction">
-
-</div>
-
-</div>
-
-</section>
-
-<!-- ========================================================= -->
-<!-- Letter -->
-<!-- ========================================================= -->
-
-<section
-class="screen letter-screen hidden"
-id="letterScene">
-
-<div class="letter-wrapper">
-
-<article
-class="letter-paper"
-id="letterPaper">
-
-<div
-class="paper-top-glow">
-
-</div>
-
-<div
-class="paper-content"
-id="letterContent">
-
-</div>
-
-</article>
-
-</div>
-
-</section>
-
-<!-- ========================================================= -->
-<!-- Gallery -->
-<!-- ========================================================= -->
-
-<section
-class="screen gallery-screen hidden"
-id="gallery">
-
-<div 
-class="section-header"
-id="galleryHeader">
-
-</div>
-
-<div
-class="gallery-list"
-id="galleryList">
-
-</div>
-
-</section>
-<!-- ========================================================= -->
-<!-- Final Message -->
-<!-- ========================================================= -->
-
-<section
-class="screen ending-screen hidden"
-id="ending">
-
-<div
-class="glass-panel ending-card"
-id="endingContent">
-
-</div>
-</section>
-
-</main>
-
-<!-- ========================================================= -->
-<!-- Music -->
-<!-- ========================================================= -->
-
-<audio
-id="bgMusic"
-loop
-preload="auto">
-
-<audio
-id="bgMusic"
-loop
-preload="auto">
-</audio>
-
-<!-- Floating Music Button -->
-
-<button
-id="musicButton"
-class="music-button"
-aria-label="Toggle Music">
-
-<svg
-viewBox="0 0 24 24"
-fill="none"
-stroke="currentColor"
-stroke-width="2">
-
-<path
-d="M9 18V5l12-2v13"/>
-
-<circle
-cx="6"
-cy="18"
-r="3"/>
-
-<circle
-cx="18"
-cy="16"
-r="3"/>
-
-</svg>
-
-</button>
-
-<!-- Scroll Progress -->
-
-<div
-class="scroll-progress">
-
-<div
-id="progressBar">
-
-</div>
-
-</div>
-
-<!-- Blur Overlay -->
-
-<div
-id="blurOverlay">
-
-<!-- Configuration -->
-
-<script src="config.js"></script>
-
-<!-- App -->
-
-<script src="js/script.js"></script>
-
+<body class="is-locked" data-phase="welcome">
+  <!-- ===== Ambient background layers ===== -->
+  <div class="bg" aria-hidden="true">
+    <div class="bg__gradient"></div>
+    <div class="bg__glow bg__glow--a"></div>
+    <div class="bg__glow bg__glow--b"></div>
+    <div class="bg__grain"></div>
+    <canvas class="bg__particles" id="particles"></canvas>
+  </div>
+
+  <!-- ===== Floating music toggle ===== -->
+  <button
+    class="music-toggle"
+    id="musicToggle"
+    type="button"
+    aria-pressed="false"
+    aria-label="Play background music"
+    data-testid="music-toggle-button"
+    hidden
+  >
+    <span class="music-toggle__bars" aria-hidden="true">
+      <i></i><i></i><i></i><i></i>
+    </span>
+  </button>
+
+  <audio id="audio" loop preload="none" playsinline></audio>
+
+  <main>
+    <!-- ===================================================== -->
+    <!-- SECTION 1 — WELCOME + ENVELOPE                        -->
+    <!-- ===================================================== -->
+    <section class="welcome" id="welcome" data-testid="welcome-screen">
+      <div class="welcome__inner">
+        <p class="welcome__eyebrow reveal" data-reveal id="welcomeEyebrow"></p>
+
+        <h1 class="welcome__title" id="welcomeTitle" aria-label="A Secret Journey">
+          <!-- lines injected by JS for the masked reveal -->
+        </h1>
+
+        <p class="welcome__subtitle reveal" data-reveal id="welcomeSubtitle"></p>
+
+        <!-- Realistic envelope -->
+        <div class="envelope" id="envelope" data-testid="envelope">
+          <div class="envelope__glow" aria-hidden="true"></div>
+          <div class="envelope__body">
+            <div class="envelope__back"></div>
+            <div class="envelope__letter" id="envelopeLetter">
+              <span class="envelope__seal" aria-hidden="true">P</span>
+            </div>
+            <div class="envelope__pocket"></div>
+            <div class="envelope__flap"></div>
+          </div>
+        </div>
+
+        <button
+          class="btn btn--primary welcome__cta reveal"
+          data-reveal
+          id="openBtn"
+          type="button"
+          data-testid="open-letter-button"
+        >
+          <span id="openBtnLabel">Open My Letter</span>
+        </button>
+
+        <p class="welcome__hint" id="welcomeHint" aria-hidden="true">
+          tap the envelope
+        </p>
+      </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- LETTER OVERLAY                                        -->
+    <!-- ===================================================== -->
+    <div class="letter-stage" id="letterStage" aria-hidden="true">
+      <article
+        class="letter"
+        id="letter"
+        role="dialog"
+        aria-modal="true"
+        aria-label="A letter for you"
+        data-testid="letter"
+      >
+        <div class="letter__paper">
+          <div class="letter__scroll">
+            <p class="letter__meta">A letter · for you</p>
+            <h2 class="letter__heading" id="letterHeading"></h2>
+            <div class="letter__body" id="letterBody"></div>
+            <p class="letter__signoff" id="letterSignOff"></p>
+            <p class="letter__signature" id="letterSignature"></p>
+
+            <button
+              class="btn btn--ghost letter__continue"
+              id="continueBtn"
+              type="button"
+              data-testid="continue-button"
+            >
+              Continue the journey
+              <span class="btn__arrow" aria-hidden="true">↓</span>
+            </button>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <!-- ===================================================== -->
+    <!-- SCROLLABLE JOURNEY (revealed after opening)           -->
+    <!-- ===================================================== -->
+    <div class="journey" id="journey" aria-hidden="true">
+      <!-- Editorial marquee -->
+      <div class="marquee" aria-hidden="true">
+        <div class="marquee__track" id="marqueeTrack"></div>
+      </div>
+
+      <!-- SECTION 2 — GALLERY -->
+      <section class="gallery" id="gallery" data-testid="gallery-section">
+        <header class="chapter">
+          <span class="chapter__num">01</span>
+          <h2 class="chapter__title reveal" data-reveal>Moments</h2>
+          <p class="chapter__intro reveal" data-reveal id="galleryIntro"></p>
+        </header>
+
+        <div class="gallery__grid" id="galleryGrid"></div>
+      </section>
+
+      <!-- SECTION 3 — FINALE -->
+      <section class="finale" id="finale" data-testid="finale-section">
+        <div class="finale__inner">
+          <span class="chapter__num">02</span>
+          <p class="finale__eyebrow reveal" data-reveal id="finaleEyebrow"></p>
+          <h2 class="finale__title reveal" data-reveal id="finaleTitle"></h2>
+          <p class="finale__message reveal" data-reveal id="finaleMessage"></p>
+          <p class="finale__signature reveal" data-reveal id="finaleSignature"></p>
+
+          <div class="finale__heart reveal" data-reveal aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="34" height="34">
+              <path
+                d="M12 21s-7.5-4.35-10-9.28C.4 8.4 2.2 5 5.5 5c2 0 3.4 1.2 4.5 2.6C11.1 6.2 12.5 5 14.5 5 17.8 5 19.6 8.4 22 11.72 19.5 16.65 12 21 12 21z"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.2"
+              />
+            </svg>
+          </div>
+        </div>
+        <footer class="footer">
+          <p id="footerText">Made with love · A Secret Journey</p>
+        </footer>
+      </section>
+    </div>
+  </main>
+
+  <!-- Config must load before the script -->
+  <script src="config.js"></script>
+  <script src="js/script.js"></script>
 </body>
 </html>

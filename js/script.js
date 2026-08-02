@@ -421,22 +421,40 @@
   /* ==========================================================
      9. BOOT
      ========================================================== */
-  function boot() {
-    applyTheme();
-    buildContent();
-    wireEvents();
-    initParticles();
-    initParallax();
-    initMusic();
-
-    // trigger the on-load hero reveal on the next frame
-    requestAnimationFrame(() =>
-      requestAnimationFrame(() => document.body.classList.add("is-ready"))
-    );
-
-    // reveal welcome eyebrow / subtitle / cta
-    initReveals();
+ function safeRun(name, fn) {
+  try {
+    fn();
+    console.log("✅ " + name + " Loaded");
+  } catch (error) {
+    console.error("❌ " + name + " Failed", error);
   }
+}
+
+function boot() {
+
+  safeRun("Theme", applyTheme);
+
+  safeRun("Content", buildContent);
+
+  safeRun("Events", wireEvents);
+
+  safeRun("Particles", initParticles);
+
+  safeRun("Parallax", initParallax);
+
+  safeRun("Music", initMusic);
+
+  safeRun("Reveal", initReveals);
+
+  requestAnimationFrame(() =>
+    requestAnimationFrame(() =>
+      document.body.classList.add("is-ready")
+    )
+  );
+
+  console.log("🚀 Boot Finished");
+
+}
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", boot);
